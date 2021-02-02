@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="https://localhost/8080">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="/register" th:object="${user}" method="POST" enctype="utf8">
+    <div>
+       User Name <input type="text" name="userName"/>
+
+    </div>
+    <div>
+        Email <input type="email" name="email"/>
+    </div>
+    <div>
+        Password <input type="password" name="password"/>
+    </div>
+    <button type="submit" th:text="Register">submit</button>
+</form>
+</body>
+</html>

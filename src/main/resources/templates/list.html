@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="https://localhost/8080">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<h1>Lista</h1>
+<table>
+    <thead>
+    <th>name</th>
+    <th>price</th>
+    <th>add to cart</th>
+    </thead>
+    <tbody>
+    <tr th:if="${list.empty}">
+        <td >Brak produktów</td>
+    </tr>
+    <tr th:each= "prod : ${list}">
+        <td><span th:text="${prod.name}"> name</span></td>
+        <td><span th:text="${prod.price}">price</span></td>
+        <td><a th:href = '@{/addtocart/{id}(id=${prod.id})}'>add to cart</a></td>
+    </tr>
+    </tbody>
+</table>
+<a th:href="@{/basket}">koszyk</a>
+
+</body>
+</html>

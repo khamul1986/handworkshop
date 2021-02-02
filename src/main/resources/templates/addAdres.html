@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="https://localhost/8080">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form th:action="@{/adres}" th:object="${adres}" method="post">
+    Miasto <input type="text" name="city"></br>
+    Ulica <input type="text" name="street"></br>
+    Numer domu/mieszkania <input type="text" name="number"></br>
+    Dodaj<input type="submit"  value="Dodaj">
+</form>
+
+</body>
+</html>
