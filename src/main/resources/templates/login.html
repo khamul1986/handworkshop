@@ -4,13 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
 </head>
 <body>
-<h1>Login page</h1>
+<div th:replace="fragments/header :: header">...</div>
+<h1>Panel Logowania</h1>
 <!--<p th:if="${loginError}" class="error">Wrong user or password</p>-->
 <form th:action="@{/login}" method="post">
-    email <input type="text" id="email" name="email" autofocus="autofocus" /> <br />
-    password <input type="password" id="password" name="password" /> <br />
+    <div>
+    email <input type="text" id="email" name="email" autofocus="autofocus" />
+    </div>
+    <div>
+    password <input type="password" id="password" name="password" />
+        <label for="password">Hasło</label>
+    </div>
+
     <input type="submit" value="Log in" />
 </form>
 

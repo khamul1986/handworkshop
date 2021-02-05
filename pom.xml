@@ -13,6 +13,17 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>handworkshop</name>
     <description>Demo project for Spring Boot</description>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.session</groupId>
+                <artifactId>spring-session-bom</artifactId>
+                <version>Corn-SR2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <properties>
         <java.version>11</java.version>
     </properties>

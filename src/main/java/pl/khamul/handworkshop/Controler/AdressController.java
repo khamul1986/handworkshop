@@ -3,6 +3,8 @@ package pl.khamul.handworkshop.Controler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pl.khamul.handworkshop.entity.Adres;
 import pl.khamul.handworkshop.entity.User;
 import pl.khamul.handworkshop.repository.AdresRepository;
@@ -33,7 +35,7 @@ public class AdressController {
     public String addAdres(Adres adres, HttpSession session){
 
         User user = (User)session.getAttribute("user");
-        System.out.println(user);
+
         List list = user.getAdres();
         list.add(adres);
         user.setAdres(list);
@@ -44,6 +46,16 @@ public class AdressController {
 
 
         return "/confirm";
+    }
+
+    @RequestMapping("/viewadres")
+    @ResponseBody
+    public List adresList(HttpSession session){
+        User user = (User)session.getAttribute("user");
+
+        List adressList = adresRepository.findAllByUserId(user.getId());
+
+        return adressList;
     }
 
 }

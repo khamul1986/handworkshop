@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.khamul.handworkshop.entity.CartItem;
+import pl.khamul.handworkshop.entity.Product;
 import pl.khamul.handworkshop.entity.ShoppingCart;
 import pl.khamul.handworkshop.entity.OrderHistory;
 import pl.khamul.handworkshop.repository.OrderHistoryRepository;
@@ -81,6 +82,7 @@ public class CartController {
 
         NewList.add(item);
 
+
         cart.setItems(NewList);
 
 
@@ -130,7 +132,9 @@ public class CartController {
         NewList.add(item);
 
         cart.setItems(NewList);
-
+        Product product = item.getProduct();
+        product.setStoragequantity(product.getStoragequantity()-1);
+        productRepository.save(product);
 
         session.setAttribute("cart", cart);
 
@@ -159,13 +163,20 @@ public class CartController {
                     .collect(Collectors.toList());
 
             NewList.add(item);
+            Product product = item.getProduct();
+            product.setStoragequantity(product.getStoragequantity()+1);
+            productRepository.save(product);
 
             cart.setItems(NewList);
 
 
             session.setAttribute("cart", cart);
+            session.invalidate();
+
         }
 
         return "/confirm";
     }
+
+
 }

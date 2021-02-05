@@ -1,6 +1,8 @@
 package pl.khamul.handworkshop.entity;
 
 
+
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import java.util.List;
@@ -13,8 +15,12 @@ public class User {
     private Long id;
 
     private String userName;
+
+
     @Email
+    @Column(unique = true)
     private String email;
+
     private String password;
 
     @OneToMany

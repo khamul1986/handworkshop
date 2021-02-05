@@ -60,6 +60,7 @@ public class Product {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
+                ", storagequantity=" + storagequantity +
                 '}';
     }
 }
