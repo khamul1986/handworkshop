@@ -4,12 +4,10 @@ import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import pl.khamul.handworkshop.entity.CartItem;
-import pl.khamul.handworkshop.entity.Product;
-import pl.khamul.handworkshop.entity.ShoppingCart;
-import pl.khamul.handworkshop.entity.OrderHistory;
+import pl.khamul.handworkshop.entity.*;
 import pl.khamul.handworkshop.repository.OrderHistoryRepository;
 import pl.khamul.handworkshop.repository.ProductRepository;
+import pl.khamul.handworkshop.repository.ReservationRepo;
 import pl.khamul.handworkshop.repository.ShoppingCartRepository;
 
 
@@ -27,13 +25,15 @@ public class CartController {
     private final ShoppingCartRepository shoppingCartRepository;
     private ShoppingCart cart;
     private final OrderHistoryRepository orderHistoryRepository;
+    private final ReservationRepo reservationRepo;
 
 
-    public CartController(ProductRepository productRepository, ShoppingCartRepository shoppingCartRepository, ShoppingCart cart, OrderHistoryRepository orderHistoryRepository) {
+    public CartController(ProductRepository productRepository, ShoppingCartRepository shoppingCartRepository, ShoppingCart cart, OrderHistoryRepository orderHistoryRepository, ReservationRepo reservationRepo) {
         this.productRepository = productRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.cart = cart;
         this.orderHistoryRepository = orderHistoryRepository;
+        this.reservationRepo = reservationRepo;
     }
 
     @GetMapping("")
@@ -54,10 +54,17 @@ public class CartController {
 
         cart = (ShoppingCart)session.getAttribute("cart");
         List<CartItem> list = cart.getItems();
-
+        CartItem cartItem = list.stream()
+                .filter(x -> id.equals(x.getProduct().getId()))
+                .findFirst().get();
         cart.setItems(list.stream()
                 .filter(x -> !id.equals(x.getProduct().getId()))
                 .collect(Collectors.toList()));
+
+
+        ReservationItem reservationItem = reservationRepo.findByProductId(id);
+        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - cartItem.getQuantity());
+        reservationRepo.save(reservationItem);
 
 
         session.setAttribute("cart", cart);
@@ -101,6 +108,12 @@ public class CartController {
 
         save.setOrderHistory(orderHistory);
 
+        for (CartItem x : save.getItems()){
+            ReservationItem reservationItem = reservationRepo.findByProductId(x.getProduct().getId());
+            reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
+            reservationRepo.save(reservationItem);
+        }
+
         orderHistoryRepository.save(orderHistory);
         shoppingCartRepository.save(save);
 
@@ -134,6 +147,8 @@ public class CartController {
         cart.setItems(NewList);
         Product product = item.getProduct();
         product.setStoragequantity(product.getStoragequantity()-1);
+        ReservationItem reservationItem = reservationRepo.findByProductId(id);
+        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity()+1);
         productRepository.save(product);
 
         session.setAttribute("cart", cart);
@@ -165,13 +180,17 @@ public class CartController {
             NewList.add(item);
             Product product = item.getProduct();
             product.setStoragequantity(product.getStoragequantity()+1);
+            ReservationItem reservationItem = reservationRepo.findByProductId(id);
+            reservationItem.setReservedQuantity(reservationItem.getReservedQuantity()-1);
             productRepository.save(product);
 
             cart.setItems(NewList);
 
 
             session.setAttribute("cart", cart);
-            session.invalidate();
+
+
+
 
         }
 

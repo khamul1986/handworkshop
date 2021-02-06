@@ -3,6 +3,7 @@ package pl.khamul.handworkshop.Session;
 
 
 
+import org.springframework.context.annotation.Bean;
 import pl.khamul.handworkshop.entity.CartItem;
 import pl.khamul.handworkshop.entity.Product;
 import pl.khamul.handworkshop.entity.ShoppingCart;
@@ -17,8 +18,6 @@ import javax.servlet.http.HttpSessionListener;
 @WebListener
 public class SessionListener implements HttpSessionListener {
     ProductRepository productRepository;
-
-
 
 
     @Override

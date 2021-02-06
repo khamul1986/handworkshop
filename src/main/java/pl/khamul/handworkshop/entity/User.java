@@ -28,6 +28,9 @@ public class User {
    @OneToMany
     private List<OrderHistory> order;
 
+   @OneToOne
+   private UserDetails details;
+
     public User(Long id, String userName, @Email String email, String password, List<Adres> adres, List<OrderHistory> order) {
         this.id = id;
         this.userName = userName;
@@ -86,6 +89,14 @@ public class User {
 
     public void setOrder(List<OrderHistory> order) {
         this.order = order;
+    }
+
+    public UserDetails getDetails() {
+        return details;
+    }
+
+    public void setDetails(UserDetails details) {
+        this.details = details;
     }
 
     @Override

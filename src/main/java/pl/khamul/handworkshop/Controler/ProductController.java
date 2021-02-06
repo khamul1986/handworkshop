@@ -7,9 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.khamul.handworkshop.entity.CartItem;
+import pl.khamul.handworkshop.entity.ReservationItem;
 import pl.khamul.handworkshop.entity.ShoppingCart;
 import pl.khamul.handworkshop.entity.Product;
 import pl.khamul.handworkshop.repository.ProductRepository;
+import pl.khamul.handworkshop.repository.ReservationRepo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,13 +25,12 @@ public class ProductController {
     private final ProductRepository productRepository;
     private ShoppingCart cart;
     List<CartItem> list = new ArrayList<>();
+    private final ReservationRepo reservationRepo;
 
-    public ProductController(ProductRepository productRepository, ShoppingCart cart){
+    public ProductController(ProductRepository productRepository, ShoppingCart cart, ReservationRepo reservationRepo) {
         this.productRepository = productRepository;
         this.cart = cart;
-
-
-
+        this.reservationRepo = reservationRepo;
     }
 
     @RequestMapping("")
@@ -45,6 +46,8 @@ public class ProductController {
     @PostMapping("/add")
     public String save(@ModelAttribute Product product){
         productRepository.save(product);
+        ReservationItem reservationItem=new ReservationItem(product, 0L);
+        reservationRepo.save(reservationItem);
         return  "/confirm";
     }
 
@@ -68,9 +71,14 @@ public class ProductController {
             list.add(cartItem);
             cart.setItems(list); ;
         Product product = cartItem.getProduct();
+        ReservationItem reservationItem = reservationRepo.findByProductId(toAdd);
+        reservationItem.setProduct(product);
+        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity()+1);
         product.setStoragequantity(product.getStoragequantity()-1);
+        reservationRepo.save(reservationItem);
         productRepository.save(product);
         session.setAttribute("cart", cart);
+
 
 
 

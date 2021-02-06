@@ -5,7 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.khamul.handworkshop.entity.Adres;
 import pl.khamul.handworkshop.entity.User;
+import pl.khamul.handworkshop.entity.UserDetails;
+import pl.khamul.handworkshop.repository.UserDetailsRepo;
 import pl.khamul.handworkshop.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,9 +20,12 @@ import java.util.List;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final UserDetailsRepo userDetailsRepo;
 
-    public UserController(UserRepository userRepository) {
+
+    public UserController(UserRepository userRepository, UserDetailsRepo userDetailsRepo) {
         this.userRepository = userRepository;
+        this.userDetailsRepo = userDetailsRepo;
     }
 
     @GetMapping("/register")
@@ -82,5 +88,25 @@ public class UserController {
             return "/userpanel";
         }
         return "/index";
+    }
+    @GetMapping("/detail")
+    public String adres(){
+
+        return "/adddetails";
+    }
+
+    @PostMapping("/detail")
+    public String addAdres(UserDetails details, HttpSession session){
+
+        User user = (User)session.getAttribute("user");
+        user.setDetails(details);
+
+        userDetailsRepo.save(details);
+        userRepository.save(user);
+
+
+
+
+        return "/confirm";
     }
 }
