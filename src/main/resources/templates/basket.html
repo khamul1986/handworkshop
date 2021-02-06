@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<br>
 Koszyk</br>
 <table>
     <thead>
@@ -31,6 +30,8 @@ Koszyk</br>
         </tr>
     </tbody>
 </table>
+Suma<span th:text="${total}"></span>
+</br>
 <a th:href="@{/list}">lista</a></br>
 <a th:href="@{/basket/save}">Wyślij</a>
 </body>

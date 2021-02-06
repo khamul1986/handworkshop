@@ -1,6 +1,6 @@
 package pl.khamul.handworkshop.Controler;
 
-import org.springframework.boot.web.servlet.server.Session;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -40,10 +40,15 @@ public class CartController {
     public String list(Model model, HttpSession session) {
         ShoppingCart temp = (ShoppingCart) session.getAttribute("cart");
         if (temp == null) {
-            model.addAttribute("cart", new ArrayList<CartItem>() {
-            });
+            model.addAttribute("cart", new ArrayList<CartItem>());
         } else {
             model.addAttribute("cart", temp.getItems());
+            Long sum = 0L;
+            for (CartItem x: cart.getItems()) {
+                sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
+
+            }
+            model.addAttribute("total", sum);
         }
 
         return "/basket";
@@ -193,9 +198,6 @@ public class CartController {
 
 
             session.setAttribute("cart", cart);
-
-
-
 
         }
 
