@@ -49,7 +49,7 @@ public class AdressController {
     }
 
     @RequestMapping("/viewadres")
-    @ResponseBody
+    @ResponseBody //widok nie JSON ;)
     public List adresList(HttpSession session){
         User user = (User)session.getAttribute("user");
 

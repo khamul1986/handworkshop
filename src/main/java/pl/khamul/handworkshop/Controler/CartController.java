@@ -113,7 +113,7 @@ public class CartController {
             reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
             reservationRepo.save(reservationItem);
         }
-       /* łączenie uzytkownika z zamówieniem */
+       /* łączenie uzytkownika z zamówieniem, dopisać widok koszyk+adresy */
         /*    if(session.getAttribute("user")!=null){
             User user = (User)session.getAttribute("user");
             orderHistory.setAdres(user.getAdres());

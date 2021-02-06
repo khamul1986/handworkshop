@@ -56,7 +56,7 @@ public class ProductController {
         model.addAttribute("list", productRepository.findAll());
         return "/list";
     }
-    @GetMapping ("/addtocart/{id}")
+    @GetMapping ("/addtocart/{id}") //dodaje podwójne produkty do koszyka, przerobić na mapę
     public String addToCart(@PathVariable("id") Long toAdd, HttpServletRequest request){
         HttpSession session = request.getSession(false);
             if(session == null){

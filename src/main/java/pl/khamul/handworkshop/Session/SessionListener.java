@@ -30,7 +30,7 @@ public class SessionListener implements HttpSessionListener {
             Product product = x.getProduct();
             product.setStoragequantity(product.getStoragequantity() + x.getQuantity());
             System.out.println(product);
-            productRepository.save(product);
+            productRepository.save(product); //how the fuck run it?
         }
 
 

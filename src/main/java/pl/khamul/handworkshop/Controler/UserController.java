@@ -48,7 +48,7 @@ public class UserController {
 
         for (String s : list){
             if(s.matches(user.getEmail())){
-                return "/index";
+                return "/error";
             }
 
         }
@@ -71,7 +71,7 @@ public class UserController {
         return "/login";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login") // Logowanie na header z dwoma wariantami widoku ??
     public String logged(User user, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
@@ -89,7 +89,7 @@ public class UserController {
         }
         return "/index";
     }
-    @GetMapping("/detail")
+    @GetMapping("/detail") // dołożyć filtrowanie
     public String adres(){
 
         return "/adddetails";

@@ -22,6 +22,9 @@ public class Product {
     @Range(min=0, message = "mniej niż zero to raczej ciężko")
     private int storagequantity;
 
+
+    //zdjęcia produktu w formie kolekcji linków(set?)
+
     public Long getId() {
         return id;
     }
