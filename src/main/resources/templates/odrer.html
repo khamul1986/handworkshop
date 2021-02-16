@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="https://localhost/8080">
+<br lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+Koszyk</br>
+<table>
+    <thead>
+    <th>name</th>
+    <th>price</th>
+    <th>-1</th>
+    <th>quantity</th>
+    <th>Delete</th>
+    <th>+1</th>
+    <tbody>
+    <tr th:if="${cart.empty}">
+        <td >Brak produktów</td>
+    </tr>
+    <tr th:each= "prod : ${cart}">
+        <td><span th:text="${prod.product.name}"> name</span></td>
+        <td><span th:text="${prod.product.price}">price</span></td>
+        <td><span th:text="${prod.quantity}">quantity</span></td>
+    </tr>
+    </tbody>
+</table>
+Suma<span th:text="${total}"></span>
+</br>
+
+Formularz adresu
+<a th:href="@{/list}">lista</a></br>
+<a th:href="@{/basket/save}">Wyślij</a>
+</body>
+</html>

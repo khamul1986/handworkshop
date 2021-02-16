@@ -1,4 +1,4 @@
-package pl.khamul.handworkshop.Session;
+/*package pl.khamul.handworkshop.Session;
 
 
 
@@ -18,6 +18,9 @@ import javax.servlet.http.HttpSessionListener;
 public class SessionListener implements HttpSessionListener {
     ProductRepository productRepository;
 
+    public SessionListener(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
@@ -38,4 +41,4 @@ public class SessionListener implements HttpSessionListener {
         System.out.println("session killed");
 
     }
-}
+}*/

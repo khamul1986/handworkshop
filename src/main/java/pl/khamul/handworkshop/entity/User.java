@@ -17,7 +17,6 @@ public class User {
     private String userName;
 
 
-    @Email
     @Column(unique = true)
     private String email;
 
@@ -25,11 +24,12 @@ public class User {
 
     @OneToMany
     private List<Adres> adres;
-   @OneToMany
+
+    @OneToMany
     private List<OrderHistory> order;
 
    @OneToOne
-   private UserDetails details;
+   private UserNames details;
 
     public User(Long id, String userName, @Email String email, String password, List<Adres> adres, List<OrderHistory> order) {
         this.id = id;
@@ -91,11 +91,11 @@ public class User {
         this.order = order;
     }
 
-    public UserDetails getDetails() {
+    public UserNames getDetails() {
         return details;
     }
 
-    public void setDetails(UserDetails details) {
+    public void setDetails(UserNames details) {
         this.details = details;
     }
 

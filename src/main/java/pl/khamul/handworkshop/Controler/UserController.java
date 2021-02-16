@@ -2,18 +2,25 @@ package pl.khamul.handworkshop.Controler;
 
 import org.springframework.stereotype.Controller;
 
+import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import pl.khamul.handworkshop.entity.Adres;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
+import pl.khamul.handworkshop.Exception.UserAlreadyExistsException;
+import pl.khamul.handworkshop.Service.UserService;
 import pl.khamul.handworkshop.entity.User;
-import pl.khamul.handworkshop.entity.UserDetails;
+import pl.khamul.handworkshop.entity.UserNames;
 import pl.khamul.handworkshop.repository.UserDetailsRepo;
 import pl.khamul.handworkshop.repository.UserRepository;
+import pl.khamul.handworkshop.transfer.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
+import javax.validation.Valid;
+
 
 
 @Controller
@@ -21,41 +28,36 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final UserDetailsRepo userDetailsRepo;
+    private final UserService userService;
 
 
-    public UserController(UserRepository userRepository, UserDetailsRepo userDetailsRepo) {
+    public UserController(UserRepository userRepository, UserDetailsRepo userDetailsRepo, UserService userService) {
         this.userRepository = userRepository;
         this.userDetailsRepo = userDetailsRepo;
+        this.userService = userService;
     }
 
     @GetMapping("/register")
-    public String register(HttpServletRequest request) {
-
-        HttpSession session = request.getSession(false);
-        if (session == null) {
-            session = request.getSession();
-        }
-        if(session.getAttribute("user")!=null) {
-            return "/userpanel";
-        }
-
+    public String showRegistrationForm(WebRequest request, Model model) {
+        UserDto userDto = new UserDto();
+        model.addAttribute("user", userDto);
         return "/register";
     }
 
     @PostMapping("/register")
-    public String registered(@ModelAttribute User user) {
-        List<String> list= userRepository.emailList();
+    public ModelAndView registerUserAccount(
+            @ModelAttribute("user") @Valid UserDto userDto,
+            HttpServletRequest request, Errors errors) {
 
-        for (String s : list){
-            if(s.matches(user.getEmail())){
-                return "/error";
-            }
-
+        try {
+            User registered = userService.registerNewUserAccount(userDto);
+        } catch (UserAlreadyExistsException uaeEx) {
+            ModelAndView mav = new ModelAndView();
+            mav.addObject("message", "An account for that username/email already exists.");
+            return mav;
         }
 
-        userRepository.save(user);
-
-        return "/confirm";
+        return new ModelAndView("/confirm", "user", userDto);
     }
 
     @GetMapping("/login")
@@ -92,11 +94,11 @@ public class UserController {
     @GetMapping("/detail") // dołożyć filtrowanie
     public String adres(){
 
-        return "/adddetails";
+        return "/details";
     }
 
     @PostMapping("/detail")
-    public String addAdres(UserDetails details, HttpSession session){
+    public String addAdres(UserNames details, HttpSession session){
 
         User user = (User)session.getAttribute("user");
         user.setDetails(details);

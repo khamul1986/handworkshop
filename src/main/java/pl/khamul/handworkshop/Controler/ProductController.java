@@ -15,6 +15,7 @@ import pl.khamul.handworkshop.repository.ReservationRepo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +57,7 @@ public class ProductController {
         model.addAttribute("list", productRepository.findAll());
         return "/list";
     }
-    @GetMapping ("/addtocart/{id}") //dodaje podwójne produkty do koszyka, przerobić na mapę
+    @GetMapping ("/addtocart/{id}") //dodaje podwójne produkty do koszyka, przerobić na mapę(??)
     public String addToCart(@PathVariable("id") Long toAdd, HttpServletRequest request){
         HttpSession session = request.getSession(false);
             if(session == null){

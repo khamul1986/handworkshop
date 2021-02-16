@@ -12,6 +12,7 @@ import pl.khamul.handworkshop.repository.ShoppingCartRepository;
 
 
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,11 +106,13 @@ public class CartController {
     }
 
     @RequestMapping("/save")
-    public String saveOrder(HttpSession session){
+    public String saveOrder(HttpSession session, Model model){
         ShoppingCart save = (ShoppingCart)session.getAttribute("cart");
         OrderHistory orderHistory = new OrderHistory();
         orderHistory.setProductList(save);
         orderHistory.setOrderDate(LocalDateTime.now());
+        BigDecimal total = (BigDecimal) model.getAttribute("total");
+        orderHistory.setPaid(total);
 
         save.setOrderHistory(orderHistory);
 

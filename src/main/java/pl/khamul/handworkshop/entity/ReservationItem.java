@@ -16,6 +16,7 @@ public class ReservationItem {
     @OneToOne
     private Product product;
 
+
     private Long reservedQuantity;
 
     public ReservationItem(Product product, Long reservedQuantity) {
