@@ -121,12 +121,9 @@ public class CartController {
             reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
             reservationRepo.save(reservationItem);
         }
-       /* łączenie uzytkownika z zamówieniem, dopisać widok koszyk+adresy */
-        /*    if(session.getAttribute("user")!=null){
-            User user = (User)session.getAttribute("user");
-            orderHistory.setAdres(user.getAdres());
+       /* łączenie użytkownika z zamówieniem, dopisać widok koszyk+adresy
 
-        }*/
+        */
         orderHistoryRepository.save(orderHistory);
         shoppingCartRepository.save(save);
 
@@ -149,7 +146,13 @@ public class CartController {
         CartItem item = list.stream()
                 .filter(x -> id.equals(x.getProduct().getId()))
                 .findFirst().get();
+
+        Product product = item.getProduct();
+
+        product.setStoragequantity(product.getStoragequantity()-1);
+
         item.setQuantity(item.getQuantity()+1);
+
 
         List <CartItem> NewList =  list.stream()
                 .filter(x -> !id.equals(x.getProduct().getId()))
@@ -158,8 +161,7 @@ public class CartController {
         NewList.add(item);
 
         cart.setItems(NewList);
-        Product product = item.getProduct();
-        product.setStoragequantity(product.getStoragequantity()-1);
+
         ReservationItem reservationItem = reservationRepo.findByProductId(id);
         reservationItem.setReservedQuantity(reservationItem.getReservedQuantity()+1);
         productRepository.save(product);

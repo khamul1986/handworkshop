@@ -1,6 +1,8 @@
 package pl.khamul.handworkshop.Controler;
 
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,10 +12,12 @@ import pl.khamul.handworkshop.entity.User;
 import pl.khamul.handworkshop.repository.AdresRepository;
 import pl.khamul.handworkshop.repository.UserRepository;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 
-@Controller("/user")
+@Controller
+@RequestMapping("/user")
 public class AdressController {
 
     private final AdresRepository adresRepository;
@@ -32,9 +36,12 @@ public class AdressController {
     }
 
     @PostMapping("/adres")
-    public String addAdres(Adres adres, HttpSession session){
+    public String addAdres(Adres adres, HttpServletRequest request, Model model){
 
-        User user = (User)session.getAttribute("user");
+        Principal principal = request.getUserPrincipal();
+        System.out.println(principal.getName());
+        User user = userRepository.findFirstByEmail(principal.getName());
+        model.addAttribute("user", user);
 
         List list = user.getAdres();
         list.add(adres);
@@ -50,8 +57,13 @@ public class AdressController {
 
     @RequestMapping("/viewadres")
     @ResponseBody //widok nie JSON ;)
-    public List adresList(HttpSession session){
-        User user = (User)session.getAttribute("user");
+    public List adresList(Model model, HttpServletRequest request){
+
+        Principal principal = request.getUserPrincipal();
+        System.out.println(principal.getName());
+        User user = userRepository.findFirstByEmail(principal.getName());
+        model.addAttribute("user", user);
+
 
         List adressList = adresRepository.findAllByUserId(user.getId());
 

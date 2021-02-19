@@ -69,13 +69,16 @@ public class ProductController {
             }
 
         CartItem cartItem = new CartItem(productRepository.findById(toAdd).get(), 1);
+        Product product = cartItem.getProduct();
+        product.setStoragequantity(product.getStoragequantity()-1);
+
             list.add(cartItem);
             cart.setItems(list); ;
-        Product product = cartItem.getProduct();
+
         ReservationItem reservationItem = reservationRepo.findByProductId(toAdd);
         reservationItem.setProduct(product);
         reservationItem.setReservedQuantity(reservationItem.getReservedQuantity()+1);
-        product.setStoragequantity(product.getStoragequantity()-1);
+
         reservationRepo.save(reservationItem);
         productRepository.save(product);
         session.setAttribute("cart", cart);

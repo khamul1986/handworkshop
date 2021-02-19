@@ -22,6 +22,8 @@ public class User {
 
     private String password;
 
+    private String role;
+
     @OneToMany
     private List<Adres> adres;
 
@@ -30,18 +32,6 @@ public class User {
 
    @OneToOne
    private UserNames details;
-
-    public User(Long id, String userName, @Email String email, String password, List<Adres> adres, List<OrderHistory> order) {
-        this.id = id;
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-        this.adres = adres;
-        this.order = order;
-    }
-
-    public User() {
-    }
 
     public Long getId() {
         return id;
@@ -73,6 +63,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public List<Adres> getAdres() {

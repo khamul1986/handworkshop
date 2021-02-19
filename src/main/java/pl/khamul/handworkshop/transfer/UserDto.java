@@ -24,15 +24,13 @@ public class UserDto {
     @NotEmpty
     private String email;
 
-    public String getFirstName() {
+    public String getUserName() {
         return userName;
     }
 
-    public void setFirstName(String firstName) {
-        this.userName = firstName;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
-
-
 
     public String getPassword() {
         return password;

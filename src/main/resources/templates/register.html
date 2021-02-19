@@ -7,19 +7,19 @@
 </head>
 <body>
 
-<form action="/register" th:object="${user}" method="POST" enctype="utf8">
+<form th:action="@{/register}" th:object="${user}" method="POST" enctype="utf8">
     <div>
-       User Name <input type="text" name="userName"/>
+       User Name <input type="text" name="userName" th:field="*{userName}"/>
 
     </div>
     <div>
-        Email <input type="email" name="email"/>
+        Email <input type="email" name="email" th:field="*{email}"/>
     </div>
     <div>
-        Password <input type="password" name="password"/>
+        Password <input type="password" name="password" th:field="*{password}"/>
     </div>
     <div>
-        Confirm Password <input type="password" name="matchingPassword"/>
+        Confirm Password <input type="password" name="matchingPassword" th:field="*{matchingPassword}"/>
     </div>
     <button type="submit" th:text="Register">submit</button>
 </form>

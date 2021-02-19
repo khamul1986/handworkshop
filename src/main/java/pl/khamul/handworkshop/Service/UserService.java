@@ -1,6 +1,7 @@
 package pl.khamul.handworkshop.Service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.khamul.handworkshop.Exception.UserAlreadyExistsException;
 import pl.khamul.handworkshop.entity.User;
@@ -12,8 +13,14 @@ import javax.transaction.Transactional;
 @Service
 public class UserService implements UserServiceInterface{
 
-    @Autowired
+
     private UserRepository userRepository;
+    private BCryptPasswordEncoder encoder;
+
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+        this.userRepository = userRepository;
+        this.encoder = encoder;
+    }
 
     @Transactional
     @Override
@@ -26,8 +33,9 @@ public class UserService implements UserServiceInterface{
                             + userDto.getEmail());
         }
         User user = new User();
-        user.setUserName(userDto.getFirstName());
-        user.setPassword(userDto.getPassword());
+        user.setUserName(userDto.getUserName());
+        String encodedPass = encoder.encode(userDto.getPassword());
+        user.setPassword(encodedPass);
         user.setEmail(userDto.getEmail());
        /* user.setRoles(Arrays.asList("ROLE_USER"));*/
         return userRepository.save(user);
