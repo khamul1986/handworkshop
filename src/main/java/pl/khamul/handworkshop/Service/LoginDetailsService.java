@@ -16,7 +16,7 @@ public class LoginDetailsService implements UserDetailsService {
     public LoginDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findFirstByEmail(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found");
+            throw new UsernameNotFoundException("Brak użytkownika");
         }
         return new LoginDetails(user);
     }

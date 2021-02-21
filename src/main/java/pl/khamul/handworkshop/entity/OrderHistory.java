@@ -27,7 +27,7 @@ public class OrderHistory {
 
    private Enum status;
 
-   private BigDecimal paid;
+   private double paid;
 
     public Long getId() {
         return id;
@@ -62,11 +62,11 @@ public class OrderHistory {
         this.orderDate = orderDate;
     }
 
-    public BigDecimal getPaid() {
+    public double getPaid() {
         return paid;
     }
 
-    public void setPaid(BigDecimal paid) {
+    public void setPaid(double paid) {
         this.paid = paid;
     }
 }

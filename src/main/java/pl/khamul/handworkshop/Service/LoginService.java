@@ -1,6 +1,5 @@
 package pl.khamul.handworkshop.Service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.khamul.handworkshop.Exception.UserAlreadyExistsException;
@@ -11,13 +10,13 @@ import pl.khamul.handworkshop.transfer.UserDto;
 import javax.transaction.Transactional;
 
 @Service
-public class UserService implements UserServiceInterface{
+public class LoginService implements LoinServiceInterface {
 
 
     private UserRepository userRepository;
     private BCryptPasswordEncoder encoder;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+    public LoginService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.encoder = encoder;
     }

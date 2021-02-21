@@ -31,7 +31,6 @@ public class UserController {
     @GetMapping("/")
     public String welcome(Model model, HttpServletRequest request){
         Principal principal = request.getUserPrincipal();
-        System.out.println(principal.getName());
         User user = userRepository.findFirstByEmail(principal.getName());
         model.addAttribute("user", user);
 
@@ -42,7 +41,7 @@ public class UserController {
     @GetMapping("/detail") // dołożyć filtrowanie
     public String adres(){
 
-        return "/details";
+        return "userdetails";
     }
 
     @PostMapping("/detail")

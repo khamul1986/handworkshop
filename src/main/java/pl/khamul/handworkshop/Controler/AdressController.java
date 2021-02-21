@@ -39,7 +39,6 @@ public class AdressController {
     public String addAdres(Adres adres, HttpServletRequest request, Model model){
 
         Principal principal = request.getUserPrincipal();
-        System.out.println(principal.getName());
         User user = userRepository.findFirstByEmail(principal.getName());
         model.addAttribute("user", user);
 
@@ -60,7 +59,6 @@ public class AdressController {
     public List adresList(Model model, HttpServletRequest request){
 
         Principal principal = request.getUserPrincipal();
-        System.out.println(principal.getName());
         User user = userRepository.findFirstByEmail(principal.getName());
         model.addAttribute("user", user);
 

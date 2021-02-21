@@ -22,6 +22,9 @@ public class Product {
     @Range(min=0, message = "mniej niż zero to raczej ciężko")
     private int storagequantity;
 
+    private String description;
+
+    private String size;
 
     //zdjęcia produktu w formie kolekcji linków(set?)
 
@@ -57,6 +60,22 @@ public class Product {
         this.storagequantity = quantity;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -64,6 +83,8 @@ public class Product {
                 ", name='" + name + '\'' +
                 ", price=" + price +
                 ", storagequantity=" + storagequantity +
+                ", description='" + description + '\'' +
+                ", size='" + size + '\'' +
                 '}';
     }
 }

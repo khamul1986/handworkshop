@@ -10,14 +10,10 @@ Koszyk</br>
     <thead>
     <th>name</th>
     <th>price</th>
-    <th>-1</th>
     <th>quantity</th>
-    <th>Delete</th>
-    <th>+1</th>
+
     <tbody>
-    <tr th:if="${cart.empty}">
-        <td >Brak produktów</td>
-    </tr>
+
     <tr th:each= "prod : ${cart}">
         <td><span th:text="${prod.product.name}"> name</span></td>
         <td><span th:text="${prod.product.price}">price</span></td>
@@ -28,8 +24,15 @@ Koszyk</br>
 Suma<span th:text="${total}"></span>
 </br>
 
-Formularz adresu
+<form th:action="@{/basket/save}" method="post" th:object = "${adres}" >
+    <tr th:each="add : ${adres}">
+        <td><span th:text = "${add.city}"></span></td>
+        <td><input type="checkbox"> Wyślij na ten adres</td>
+    </tr>
+    <input type="submit">
+</form>
+
+
 <a th:href="@{/list}">lista</a></br>
-<a th:href="@{/basket/save}">Wyślij</a>
 </body>
 </html>

@@ -73,7 +73,7 @@ public class ProductController {
         product.setStoragequantity(product.getStoragequantity()-1);
 
             list.add(cartItem);
-            cart.setItems(list); ;
+            cart.setItems(list);
 
         ReservationItem reservationItem = reservationRepo.findByProductId(toAdd);
         reservationItem.setProduct(product);
