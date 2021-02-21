@@ -21,33 +21,31 @@ Koszyk</br>
     </tr>
     </tbody>
 </table>
-Suma<span th:text="${total}"></span>
+Suma <span th:text="${total}"></span>
 </br>
 <table>
-<form th:action="@{/basket/save}" method="post" th:object = "${adres}" >
     <tr th:each="add : ${adres}">
         <td><span th:text = "${add.city}"></span></td>
-        <td><input type="checkbox"> Wyślij na ten adres</td>
+        <td><span th:text = "${add.street}"></span></td>
+        <td><span th:text = "${add.number}"></span></td>
+        <td><a th:href = "@{/basket/save/{id}(id=${add.id})}">Wyślij na ten adres</a></td>
     </tr>
-
-    <tr><input type="submit"></tr>
-</form>
 </table>
 
-<!--formularz z linkami przez id??
+
+<!--
 mam problem z przeniesieniem wybranego adresu do metody zapisującej zamówienie. wchodzi null.
-Samm formularz wpisywania adresu i zapisanie za każdym razem od nowa do bazy nie byłoby problemem.
+Sam formularz wpisywania adresu i zapisanie za każdym razem od nowa do bazy nie byłoby problemem.-->
 
-drugi formularz dla nowego adresu, osobna metoda kontrolera??-->
+<form th:action="@{/basket/save}" th:object="${adres}" method="post">
+    Miasto <input type="text" name="city"></br>
+    Ulica <input type="text" name="street"></br>
+    Numer<input type="text" name="number"></br>
+    Dodaj<input type="submit"  value="Dodaj">
 
-<table>
-    <form th:action="@{/basket/save}" method="post" th:object = "${adres}" >
 
 
-
-        <tr><input type="submit"></tr>
-    </form>
-</table>
+</form>
 
 <a th:href="@{/list}">lista</a></br>
 </body>
