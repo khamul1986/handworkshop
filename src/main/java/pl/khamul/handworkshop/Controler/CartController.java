@@ -27,15 +27,19 @@ public class CartController {
     private final OrderHistoryRepository orderHistoryRepository;
     private final ReservationRepo reservationRepo;
     private final UserRepository userRepository;
+    private final AdresRepository adresRepository;
 
 
-    public CartController(ProductRepository productRepository, ShoppingCartRepository shoppingCartRepository, ShoppingCart cart, OrderHistoryRepository orderHistoryRepository, ReservationRepo reservationRepo, UserRepository userRepository) {
+    public CartController(ProductRepository productRepository, ShoppingCartRepository shoppingCartRepository,
+                          ShoppingCart cart, OrderHistoryRepository orderHistoryRepository,
+                          ReservationRepo reservationRepo, UserRepository userRepository, AdresRepository adresRepository) {
         this.productRepository = productRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.cart = cart;
         this.orderHistoryRepository = orderHistoryRepository;
         this.reservationRepo = reservationRepo;
         this.userRepository = userRepository;
+        this.adresRepository = adresRepository;
     }
 
     @GetMapping("")
@@ -142,11 +146,10 @@ public class CartController {
 
     }
 
-    @RequestMapping("/save")
-    public String saveOrder(HttpSession session, HttpServletRequest request, @ModelAttribute Adres adres){
+    @RequestMapping("/save/{id}")
+    public String saveOrder(HttpSession session, HttpServletRequest request, @PathVariable Long id){
 
-
-
+        Adres adres = adresRepository.getOne(id);
 
         ShoppingCart save = (ShoppingCart)session.getAttribute("cart");
         OrderHistory orderHistory = new OrderHistory();
@@ -157,7 +160,8 @@ public class CartController {
             sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
 
         }
-        System.out.println(sum);
+
+        orderHistory.setAdres(adres);
         orderHistory.setPaid(sum);
 
         save.setOrderHistory(orderHistory);
@@ -173,6 +177,53 @@ public class CartController {
             User user = userRepository.findFirstByEmail(principal.getName());
             List<OrderHistory> list = user.getOrder();
             list.add(orderHistory);
+            user.setOrder(list);
+            orderHistoryRepository.save(orderHistory);
+            userRepository.save(user);
+
+        }else {
+            orderHistoryRepository.save(orderHistory);
+        }
+
+        shoppingCartRepository.save(save);
+
+        save = new ShoppingCart();
+        session.setAttribute("cart", save);
+
+        return "/confirmOrder";
+    }
+
+    @RequestMapping("/save")
+    public String saveOrder(HttpSession session, HttpServletRequest request, @ModelAttribute Adres adres){
+
+        System.out.println(adres.getCity());
+        adresRepository.save(adres);
+        ShoppingCart save = (ShoppingCart)session.getAttribute("cart");
+        OrderHistory orderHistory = new OrderHistory();
+        orderHistory.setProductList(save);
+        orderHistory.setOrderDate(LocalDateTime.now());
+        double sum = 0;
+        for (CartItem x: cart.getItems()) {
+            sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
+
+        }
+        orderHistory.setAdres(adres);
+        orderHistory.setPaid(sum);
+
+        save.setOrderHistory(orderHistory);
+
+        for (CartItem x : save.getItems()){
+            ReservationItem reservationItem = reservationRepo.findByProductId(x.getProduct().getId());
+            reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
+            reservationRepo.save(reservationItem);
+        }
+        Principal principal = request.getUserPrincipal();
+
+        if(principal != null) {
+            User user = userRepository.findFirstByEmail(principal.getName());
+            List<OrderHistory> list = user.getOrder();
+            list.add(orderHistory);
+            user.setOrder(list);
             orderHistoryRepository.save(orderHistory);
             userRepository.save(user);
 

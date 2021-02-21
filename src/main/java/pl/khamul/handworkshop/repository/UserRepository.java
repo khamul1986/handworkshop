@@ -12,7 +12,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findFirstByEmail(String email);
 
 
-
-    @Query("SELECT email FROM User")
-    List <String> emailList();
 }
