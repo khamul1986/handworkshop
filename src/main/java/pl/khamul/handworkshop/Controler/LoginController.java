@@ -22,12 +22,12 @@ import javax.validation.Valid;
 @Controller
 public class LoginController {
 
-    private final UserRepository userRepository;
+
     private final LoginService loginService;
 
 
-    public LoginController(UserRepository userRepository, LoginService loginService) {
-        this.userRepository = userRepository;
+    public LoginController(LoginService loginService) {
+
         this.loginService = loginService;
     }
 

@@ -145,9 +145,7 @@ public class CartController {
     @RequestMapping("/save")
     public String saveOrder(HttpSession session, HttpServletRequest request, @ModelAttribute Adres adres){
 
-
-
-
+        System.out.println(adres.getCity());
         ShoppingCart save = (ShoppingCart)session.getAttribute("cart");
         OrderHistory orderHistory = new OrderHistory();
         orderHistory.setProductList(save);
@@ -173,6 +171,7 @@ public class CartController {
             User user = userRepository.findFirstByEmail(principal.getName());
             List<OrderHistory> list = user.getOrder();
             list.add(orderHistory);
+            user.setOrder(list);
             orderHistoryRepository.save(orderHistory);
             userRepository.save(user);
 

@@ -60,12 +60,14 @@ public class AdressController {
 
         Principal principal = request.getUserPrincipal();
         User user = userRepository.findFirstByEmail(principal.getName());
-        model.addAttribute("user", user);
 
 
-        List adressList = adresRepository.findAllByUserId(user.getId());
 
-        return adressList;
+        List adresList = adresRepository.findAllByUserId(user.getId());
+
+        model.addAttribute("adresList", adresList);
+
+        return adresList;
     }
 
 }
