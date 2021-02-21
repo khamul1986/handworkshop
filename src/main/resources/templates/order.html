@@ -35,6 +35,7 @@ Suma <span th:text="${total}"></span>
 
 <!--
 mam problem z przeniesieniem wybranego adresu do metody zapisującej zamówienie. wchodzi null.
+Przepisałem na osobne linki
 Sam formularz wpisywania adresu i zapisanie za każdym razem od nowa do bazy nie byłoby problemem.-->
 
 <form th:action="@{/basket/save}" th:object="${adres}" method="post">
