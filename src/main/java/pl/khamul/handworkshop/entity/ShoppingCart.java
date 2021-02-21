@@ -43,13 +43,6 @@ public class ShoppingCart {
         this.items = items;
     }
 
-    public List<CartItem> addToCart(CartItem cartItem){
-
-            items.add(cartItem);
-
-        return items;
-
-  }
 
     public Long getId() {
         return id;

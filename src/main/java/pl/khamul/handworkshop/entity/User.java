@@ -5,6 +5,7 @@ package pl.khamul.handworkshop.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,31 +18,21 @@ public class User {
     private String userName;
 
 
-    @Email
     @Column(unique = true)
     private String email;
 
     private String password;
 
+    private String role;
+
     @OneToMany
     private List<Adres> adres;
-   @OneToMany
+
+    @OneToMany
     private List<OrderHistory> order;
 
    @OneToOne
-   private UserDetails details;
-
-    public User(Long id, String userName, @Email String email, String password, List<Adres> adres, List<OrderHistory> order) {
-        this.id = id;
-        this.userName = userName;
-        this.email = email;
-        this.password = password;
-        this.adres = adres;
-        this.order = order;
-    }
-
-    public User() {
-    }
+   private UserNames details;
 
     public Long getId() {
         return id;
@@ -75,6 +66,14 @@ public class User {
         this.password = password;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public List<Adres> getAdres() {
         return adres;
     }
@@ -91,11 +90,11 @@ public class User {
         this.order = order;
     }
 
-    public UserDetails getDetails() {
+    public UserNames getDetails() {
         return details;
     }
 
-    public void setDetails(UserDetails details) {
+    public void setDetails(UserNames details) {
         this.details = details;
     }
 

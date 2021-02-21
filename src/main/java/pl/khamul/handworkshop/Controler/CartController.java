@@ -5,13 +5,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.khamul.handworkshop.entity.*;
-import pl.khamul.handworkshop.repository.OrderHistoryRepository;
-import pl.khamul.handworkshop.repository.ProductRepository;
-import pl.khamul.handworkshop.repository.ReservationRepo;
-import pl.khamul.handworkshop.repository.ShoppingCartRepository;
+import pl.khamul.handworkshop.repository.*;
 
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +26,16 @@ public class CartController {
     private ShoppingCart cart;
     private final OrderHistoryRepository orderHistoryRepository;
     private final ReservationRepo reservationRepo;
+    private final UserRepository userRepository;
 
 
-    public CartController(ProductRepository productRepository, ShoppingCartRepository shoppingCartRepository, ShoppingCart cart, OrderHistoryRepository orderHistoryRepository, ReservationRepo reservationRepo) {
+    public CartController(ProductRepository productRepository, ShoppingCartRepository shoppingCartRepository, ShoppingCart cart, OrderHistoryRepository orderHistoryRepository, ReservationRepo reservationRepo, UserRepository userRepository) {
         this.productRepository = productRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.cart = cart;
         this.orderHistoryRepository = orderHistoryRepository;
         this.reservationRepo = reservationRepo;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("")
@@ -43,7 +45,7 @@ public class CartController {
             model.addAttribute("cart", new ArrayList<CartItem>());
         } else {
             model.addAttribute("cart", temp.getItems());
-            Long sum = 0L;
+            double sum = 0;
             for (CartItem x: cart.getItems()) {
                 sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
 
@@ -104,12 +106,59 @@ public class CartController {
 
     }
 
+    @RequestMapping("/order")//wydzielić na spokojnie
+    public String createOrder(HttpSession session, Model model, HttpServletRequest request){ //wypakować z sesji i policzyć na nowo, dodać adres formularzem
+        ShoppingCart temp = (ShoppingCart) session.getAttribute("cart");
+        if (temp == null) {
+            model.addAttribute("cart", new ArrayList<CartItem>());
+        } else {
+            model.addAttribute("cart", temp.getItems());
+            double sum = 0;
+            for (CartItem x: cart.getItems()) {
+                sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
+
+            }
+            model.addAttribute("total", sum);
+        }
+        Principal principal = request.getUserPrincipal();
+        if(principal !=null) {
+            User user = userRepository.findFirstByEmail(principal.getName());
+            List<Adres> list = user.getAdres();
+            System.out.println(list);
+            model.addAttribute("adres", list);
+        }else{
+            List<Adres> list= new ArrayList<>();
+            System.out.println(list);
+            model.addAttribute("adres", list);
+        }
+
+
+
+
+
+
+        return "/order";
+
+
+    }
+
     @RequestMapping("/save")
-    public String saveOrder(HttpSession session){
+    public String saveOrder(HttpSession session, HttpServletRequest request, @ModelAttribute Adres adres){
+
+
+
+
         ShoppingCart save = (ShoppingCart)session.getAttribute("cart");
         OrderHistory orderHistory = new OrderHistory();
         orderHistory.setProductList(save);
         orderHistory.setOrderDate(LocalDateTime.now());
+        double sum = 0;
+        for (CartItem x: cart.getItems()) {
+            sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
+
+        }
+        System.out.println(sum);
+        orderHistory.setPaid(sum);
 
         save.setOrderHistory(orderHistory);
 
@@ -118,24 +167,28 @@ public class CartController {
             reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
             reservationRepo.save(reservationItem);
         }
-       /* łączenie uzytkownika z zamówieniem, dopisać widok koszyk+adresy */
-        /*    if(session.getAttribute("user")!=null){
-            User user = (User)session.getAttribute("user");
-            orderHistory.setAdres(user.getAdres());
+        Principal principal = request.getUserPrincipal();
 
-        }*/
-        orderHistoryRepository.save(orderHistory);
+        if(principal != null) {
+            User user = userRepository.findFirstByEmail(principal.getName());
+            List<OrderHistory> list = user.getOrder();
+            list.add(orderHistory);
+            orderHistoryRepository.save(orderHistory);
+            userRepository.save(user);
+
+        }else {
+            orderHistoryRepository.save(orderHistory);
+        }
+
         shoppingCartRepository.save(save);
 
         save = new ShoppingCart();
         session.setAttribute("cart", save);
 
-
-
-        return "/confirm";
-
-
+        return "/confirmOrder";
     }
+
+
 
     @RequestMapping("/plus/{id}")
     public String plusOne(@PathVariable Long id, HttpSession session){
@@ -146,7 +199,13 @@ public class CartController {
         CartItem item = list.stream()
                 .filter(x -> id.equals(x.getProduct().getId()))
                 .findFirst().get();
+
+        Product product = item.getProduct();
+
+        product.setStoragequantity(product.getStoragequantity()-1);
+
         item.setQuantity(item.getQuantity()+1);
+
 
         List <CartItem> NewList =  list.stream()
                 .filter(x -> !id.equals(x.getProduct().getId()))
@@ -155,8 +214,7 @@ public class CartController {
         NewList.add(item);
 
         cart.setItems(NewList);
-        Product product = item.getProduct();
-        product.setStoragequantity(product.getStoragequantity()-1);
+
         ReservationItem reservationItem = reservationRepo.findByProductId(id);
         reservationItem.setReservedQuantity(reservationItem.getReservedQuantity()+1);
         productRepository.save(product);

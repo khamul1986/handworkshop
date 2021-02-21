@@ -4,6 +4,7 @@ package pl.khamul.handworkshop.entity;
 import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 
@@ -23,6 +24,10 @@ public class OrderHistory {
 
     @OneToOne
     private Adres adres;
+
+   private Enum status;
+
+   private double paid;
 
     public Long getId() {
         return id;
@@ -55,5 +60,13 @@ public class OrderHistory {
 
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public double getPaid() {
+        return paid;
+    }
+
+    public void setPaid(double paid) {
+        this.paid = paid;
     }
 }

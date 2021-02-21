@@ -9,7 +9,7 @@
 <body>
 <div th:replace="fragments/header :: header">...</div>
 <h1>Panel Logowania</h1>
-<!--<p th:if="${loginError}" class="error">Wrong user or password</p>-->
+
 <form th:action="@{/login}" method="post">
     <div>
     email <input type="text" id="email" name="email" autofocus="autofocus" />
