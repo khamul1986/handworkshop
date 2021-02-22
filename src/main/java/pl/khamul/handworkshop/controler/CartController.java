@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.khamul.handworkshop.entity.*;
 import pl.khamul.handworkshop.repository.*;
+import pl.khamul.handworkshop.service.CartService;
 
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,32 +28,27 @@ public class CartController {
     private final ReservationRepo reservationRepo;
     private final UserRepository userRepository;
     private final AdresRepository adresRepository;
+    private final CartService cartService;
 
 
-    public CartController(ProductRepository productRepository, ShoppingCartRepository shoppingCartRepository,
-                          ShoppingCart cart, OrderHistoryRepository orderHistoryRepository,
-                          ReservationRepo reservationRepo, UserRepository userRepository, AdresRepository adresRepository) {
+    public CartController(ProductRepository productRepository, ShoppingCartRepository shoppingCartRepository, OrderHistoryRepository orderHistoryRepository, ReservationRepo reservationRepo, UserRepository userRepository, AdresRepository adresRepository, CartService cartService) {
         this.productRepository = productRepository;
         this.shoppingCartRepository = shoppingCartRepository;
-        this.cart = cart;
         this.orderHistoryRepository = orderHistoryRepository;
         this.reservationRepo = reservationRepo;
         this.userRepository = userRepository;
         this.adresRepository = adresRepository;
+        this.cartService = cartService;
     }
 
     @GetMapping("")
     public String list(Model model, HttpSession session) {
-        ShoppingCart temp = (ShoppingCart) session.getAttribute("cart");
+        ShoppingCart temp = cartService.getCart(session);
         if (temp == null) {
             model.addAttribute("cart", new ArrayList<CartItem>());
         } else {
             model.addAttribute("cart", temp.getItems());
-            double sum = 0;
-            for (CartItem x: cart.getItems()) {
-                sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
-
-            }
+            double sum = cartService.totalPrice(temp);
             model.addAttribute("total", sum);
         }
 
@@ -62,11 +58,14 @@ public class CartController {
     @GetMapping("/delete/{id}")
     public String deleteItem(@PathVariable Long id, HttpSession session){
 
-        cart = (ShoppingCart)session.getAttribute("cart");
+        cart = cartService.getCart(session);
         List<CartItem> list = cart.getItems();
+
+
         CartItem cartItem = list.stream()
                 .filter(x -> id.equals(x.getProduct().getId()))
                 .findFirst().get();
+
         cart.setItems(list.stream()
                 .filter(x -> !id.equals(x.getProduct().getId()))
                 .collect(Collectors.toList()));
@@ -85,7 +84,7 @@ public class CartController {
     @RequestMapping("/update/{id}/{quantity}")
     public String updateItem(@PathVariable Long id, @PathVariable int quantity, HttpSession session){
 
-        cart = (ShoppingCart)session.getAttribute("cart");
+        cart = cartService.getCart(session);
         List<CartItem> list = cart.getItems();
 
         CartItem item = list.stream()
@@ -109,29 +108,25 @@ public class CartController {
 
     }
 
-    @RequestMapping("/order")//wydzielić na spokojnie
-    public String createOrder(HttpSession session, Model model, HttpServletRequest request){ //wypakować z sesji i policzyć na nowo, dodać adres formularzem
-        ShoppingCart temp = (ShoppingCart) session.getAttribute("cart");
+    @RequestMapping("/order")
+    public String createOrder(HttpSession session, Model model, HttpServletRequest request){
+        ShoppingCart temp = cartService.getCart(session);
+        Principal principal = request.getUserPrincipal();
+
         if (temp == null) {
             model.addAttribute("cart", new ArrayList<CartItem>());
         } else {
             model.addAttribute("cart", temp.getItems());
-            double sum = 0;
-            for (CartItem x: cart.getItems()) {
-                sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
-
-            }
+            double sum = cartService.totalPrice(temp);
             model.addAttribute("total", sum);
         }
-        Principal principal = request.getUserPrincipal();
+
         if(principal !=null) {
             User user = userRepository.findFirstByEmail(principal.getName());
             List<Adress> list = user.getAdres();
-            System.out.println(list);
             model.addAttribute("adres", list);
         }else{
             List<Adress> list= new ArrayList<>();
-            System.out.println(list);
             model.addAttribute("adres", list);
         }
 
@@ -150,15 +145,11 @@ public class CartController {
 
         Adress adress = adresRepository.getOne(id);
 
-        ShoppingCart save = (ShoppingCart)session.getAttribute("cart");
+        ShoppingCart save = cartService.getCart(session);
         OrderHistory orderHistory = new OrderHistory();
         orderHistory.setProductList(save);
         orderHistory.setOrderDate(LocalDateTime.now());
-        double sum = 0;
-        for (CartItem x: cart.getItems()) {
-            sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
-
-        }
+        double sum =cartService.totalPrice(save);
 
         orderHistory.setAdres(adress);
         orderHistory.setPaid(sum);
@@ -194,17 +185,13 @@ public class CartController {
     @RequestMapping("/save")
     public String saveOrder(HttpSession session, HttpServletRequest request, @ModelAttribute Adress adress){
 
-        System.out.println(adress.getCity());
+
         adresRepository.save(adress);
-        ShoppingCart save = (ShoppingCart)session.getAttribute("cart");
+        ShoppingCart save = cartService.getCart(session);
         OrderHistory orderHistory = new OrderHistory();
         orderHistory.setProductList(save);
         orderHistory.setOrderDate(LocalDateTime.now());
-        double sum = 0;
-        for (CartItem x: cart.getItems()) {
-            sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
-
-        }
+        double sum = cartService.totalPrice(save);
         orderHistory.setAdres(adress);
         orderHistory.setPaid(sum);
 
@@ -242,7 +229,7 @@ public class CartController {
     @RequestMapping("/plus/{id}")
     public String plusOne(@PathVariable Long id, HttpSession session){
 
-        cart = (ShoppingCart)session.getAttribute("cart");
+        cart = cartService.getCart(session);
         List<CartItem> list = cart.getItems();
 
         CartItem item = list.stream()
@@ -278,7 +265,7 @@ public class CartController {
     @RequestMapping("/minus/{id}")
     public String minusOne(@PathVariable Long id, HttpSession session){
 
-        cart = (ShoppingCart)session.getAttribute("cart");
+        cart = cartService.getCart(session);
         List<CartItem> list = cart.getItems();
 
         CartItem item = list.stream()
