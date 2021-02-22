@@ -1,4 +1,4 @@
-package pl.khamul.handworkshop.Exception;
+package pl.khamul.handworkshop.exception;
 
 import javax.naming.AuthenticationException;
 

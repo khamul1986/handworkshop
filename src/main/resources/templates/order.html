@@ -24,11 +24,11 @@ Koszyk</br>
 Suma <span th:text="${total}"></span>
 </br>
 <table>
-    <tr th:each="add : ${adres}">
+    <tr th:each="add : ${adress}">
         <td><span th:text = "${add.city}"></span></td>
         <td><span th:text = "${add.street}"></span></td>
         <td><span th:text = "${add.number}"></span></td>
-        <td><a th:href = "@{/basket/save/{id}(id=${add.id})}">Wyślij na ten adres</a></td>
+        <td><a th:href = "@{/basket/save/{id}(id=${add.id})}">Wyślij na ten adress</a></td>
     </tr>
 </table>
 
@@ -38,7 +38,7 @@ mam problem z przeniesieniem wybranego adresu do metody zapisującej zamówienie
 Przepisałem na osobne linki
 Sam formularz wpisywania adresu i zapisanie za każdym razem od nowa do bazy nie byłoby problemem.-->
 
-<form th:action="@{/basket/save}" th:object="${adres}" method="post">
+<form th:action="@{/basket/save}" th:object="${adress}" method="post">
     Miasto <input type="text" name="city"></br>
     Ulica <input type="text" name="street"></br>
     Numer<input type="text" name="number"></br>

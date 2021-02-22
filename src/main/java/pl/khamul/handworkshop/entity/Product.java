@@ -26,7 +26,7 @@ public class Product {
 
     private String size;
 
-    //zdjęcia produktu w formie kolekcji linków(set?)
+    //zdjęcia produktu w formie kolekcji linków(set?) --> id i nazwa w bazie
 
     public Long getId() {
         return id;

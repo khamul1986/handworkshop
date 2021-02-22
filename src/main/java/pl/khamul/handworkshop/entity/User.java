@@ -4,8 +4,6 @@ package pl.khamul.handworkshop.entity;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +24,7 @@ public class User {
     private String role;
 
     @OneToMany
-    private List<Adres> adres;
+    private List<Adress> adres;
 
     @OneToMany
     private List<OrderHistory> order;
@@ -74,11 +72,11 @@ public class User {
         this.role = role;
     }
 
-    public List<Adres> getAdres() {
+    public List<Adress> getAdres() {
         return adres;
     }
 
-    public void setAdres(List<Adres> adres) {
+    public void setAdres(List<Adress> adres) {
         this.adres = adres;
     }
 

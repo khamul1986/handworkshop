@@ -1,4 +1,4 @@
-package pl.khamul.handworkshop.Controler;
+package pl.khamul.handworkshop.controler;
 
 import org.springframework.stereotype.Controller;
 
@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
-import pl.khamul.handworkshop.Exception.UserAlreadyExistsException;
-import pl.khamul.handworkshop.Service.LoginService;
-import pl.khamul.handworkshop.repository.UserRepository;
+import pl.khamul.handworkshop.exception.UserAlreadyExistsException;
+import pl.khamul.handworkshop.service.LoginService;
 import pl.khamul.handworkshop.transfer.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,13 +19,13 @@ import javax.validation.Valid;
 
 
 @Controller
-public class LoginController {
+public class RegistrationController {
 
 
     private final LoginService loginService;
 
 
-    public LoginController(LoginService loginService) {
+    public RegistrationController(LoginService loginService) {
 
         this.loginService = loginService;
     }

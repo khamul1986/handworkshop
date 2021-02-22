@@ -1,4 +1,4 @@
-package pl.khamul.handworkshop.Validator;
+package pl.khamul.handworkshop.validator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

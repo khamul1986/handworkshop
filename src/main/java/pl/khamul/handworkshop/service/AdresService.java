@@ -1,4 +1,4 @@
-package pl.khamul.handworkshop.Service;
+package pl.khamul.handworkshop.service;
 
 public class AdresService implements AdresServiceInteface {
 }

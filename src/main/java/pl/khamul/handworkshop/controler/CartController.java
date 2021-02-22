@@ -1,4 +1,4 @@
-package pl.khamul.handworkshop.Controler;
+package pl.khamul.handworkshop.controler;
 
 
 import org.springframework.stereotype.Controller;
@@ -10,7 +10,6 @@ import pl.khamul.handworkshop.repository.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.math.BigDecimal;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -127,11 +126,11 @@ public class CartController {
         Principal principal = request.getUserPrincipal();
         if(principal !=null) {
             User user = userRepository.findFirstByEmail(principal.getName());
-            List<Adres> list = user.getAdres();
+            List<Adress> list = user.getAdres();
             System.out.println(list);
             model.addAttribute("adres", list);
         }else{
-            List<Adres> list= new ArrayList<>();
+            List<Adress> list= new ArrayList<>();
             System.out.println(list);
             model.addAttribute("adres", list);
         }
@@ -149,7 +148,7 @@ public class CartController {
     @RequestMapping("/save/{id}")
     public String saveOrder(HttpSession session, HttpServletRequest request, @PathVariable Long id){
 
-        Adres adres = adresRepository.getOne(id);
+        Adress adress = adresRepository.getOne(id);
 
         ShoppingCart save = (ShoppingCart)session.getAttribute("cart");
         OrderHistory orderHistory = new OrderHistory();
@@ -161,10 +160,9 @@ public class CartController {
 
         }
 
-        orderHistory.setAdres(adres);
+        orderHistory.setAdres(adress);
         orderHistory.setPaid(sum);
 
-        save.setOrderHistory(orderHistory);
 
         for (CartItem x : save.getItems()){
             ReservationItem reservationItem = reservationRepo.findByProductId(x.getProduct().getId());
@@ -194,10 +192,10 @@ public class CartController {
     }
 
     @RequestMapping("/save")
-    public String saveOrder(HttpSession session, HttpServletRequest request, @ModelAttribute Adres adres){
+    public String saveOrder(HttpSession session, HttpServletRequest request, @ModelAttribute Adress adress){
 
-        System.out.println(adres.getCity());
-        adresRepository.save(adres);
+        System.out.println(adress.getCity());
+        adresRepository.save(adress);
         ShoppingCart save = (ShoppingCart)session.getAttribute("cart");
         OrderHistory orderHistory = new OrderHistory();
         orderHistory.setProductList(save);
@@ -207,10 +205,10 @@ public class CartController {
             sum= sum+(x.getProduct().getPrice().longValue()*x.getQuantity());
 
         }
-        orderHistory.setAdres(adres);
+        orderHistory.setAdres(adress);
         orderHistory.setPaid(sum);
 
-        save.setOrderHistory(orderHistory);
+
 
         for (CartItem x : save.getItems()){
             ReservationItem reservationItem = reservationRepo.findByProductId(x.getProduct().getId());

@@ -1,8 +1,8 @@
-package pl.khamul.handworkshop.Service;
+package pl.khamul.handworkshop.service;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import pl.khamul.handworkshop.Exception.UserAlreadyExistsException;
+import pl.khamul.handworkshop.exception.UserAlreadyExistsException;
 import pl.khamul.handworkshop.entity.User;
 import pl.khamul.handworkshop.repository.UserRepository;
 import pl.khamul.handworkshop.transfer.UserDto;
@@ -10,7 +10,7 @@ import pl.khamul.handworkshop.transfer.UserDto;
 import javax.transaction.Transactional;
 
 @Service
-public class LoginService implements LoinServiceInterface {
+public class LoginService implements RegistrationServiceInterface {
 
 
     private UserRepository userRepository;

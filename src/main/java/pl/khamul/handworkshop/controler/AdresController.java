@@ -1,4 +1,4 @@
-package pl.khamul.handworkshop.Controler;
+package pl.khamul.handworkshop.controler;
 
 
 import org.springframework.stereotype.Controller;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.khamul.handworkshop.entity.Adres;
+import pl.khamul.handworkshop.entity.Adress;
 import pl.khamul.handworkshop.entity.User;
 import pl.khamul.handworkshop.repository.AdresRepository;
 import pl.khamul.handworkshop.repository.UserRepository;
@@ -18,13 +18,13 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/user")
-public class AdressController {
+public class AdresController {
 
     private final AdresRepository adresRepository;
     private final UserRepository userRepository;
 
 
-    public AdressController(AdresRepository adresRepository, UserRepository userRepository) {
+    public AdresController(AdresRepository adresRepository, UserRepository userRepository) {
         this.adresRepository = adresRepository;
         this.userRepository = userRepository;
     }
@@ -36,18 +36,17 @@ public class AdressController {
     }
 
     @PostMapping("/adres")
-    public String addAdres(Adres adres, HttpServletRequest request, Model model){
+    public String addAdres(Adress adress, HttpServletRequest request, Model model){
 
         Principal principal = request.getUserPrincipal();
         User user = userRepository.findFirstByEmail(principal.getName());
-        model.addAttribute("user", user);
 
         List list = user.getAdres();
-        list.add(adres);
+        list.add(adress);
         user.setAdres(list);
-        adresRepository.save(adres);
+        adresRepository.save(adress);
         userRepository.save(user);
-        System.out.println(adres);
+
 
 
 

@@ -1,14 +1,14 @@
 package pl.khamul.handworkshop.transfer;
 
-import pl.khamul.handworkshop.Validator.ValidEmail;
-import pl.khamul.handworkshop.Validator.ValidPassword;
+import pl.khamul.handworkshop.validator.ValidEmail;
+import pl.khamul.handworkshop.validator.ValidPassword;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @ValidPassword
 public class UserDto {
-
 
     @NotNull
     @NotEmpty

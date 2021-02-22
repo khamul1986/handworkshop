@@ -1,4 +1,4 @@
-package pl.khamul.handworkshop.Controler;
+package pl.khamul.handworkshop.controler;
 
 
 
@@ -15,7 +15,6 @@ import pl.khamul.handworkshop.repository.ReservationRepo;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 

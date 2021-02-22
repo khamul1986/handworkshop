@@ -7,7 +7,7 @@ import javax.persistence.Id;
 
 
 @Entity
-public class Adres {
+public class Adress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,14 +19,14 @@ public class Adres {
 
     private String number;
 
-    public Adres(Long id, String city, String street, String number) {
+    public Adress(Long id, String city, String street, String number) {
         this.id = id;
         this.city = city;
         this.street = street;
         this.number = number;
     }
 
-    public Adres() {
+    public Adress() {
     }
 
     public Long getId() {
