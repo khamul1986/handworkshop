@@ -130,83 +130,17 @@ public class CartController {
 
         Adress adress = adresRepository.getOne(id);
 
-        ShoppingCart save = cartService.getCart(session);
-        OrderHistory orderHistory = new OrderHistory();
-        orderHistory.setProductList(save);
-        orderHistory.setOrderDate(LocalDateTime.now());
-        double sum =cartService.totalPrice(save);
-
-        orderHistory.setAdres(adress);
-        orderHistory.setPaid(sum);
-
-
-        for (CartItem x : save.getItems()){
-            ReservationItem reservationItem = reservationRepo.findByProductId(x.getProduct().getId());
-            reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
-            reservationRepo.save(reservationItem);
-        }
-        Principal principal = request.getUserPrincipal();
-
-        if(principal != null) {
-            User user = userRepository.findFirstByEmail(principal.getName());
-            List<OrderHistory> list = user.getOrder();
-            list.add(orderHistory);
-            user.setOrder(list);
-            orderHistoryRepository.save(orderHistory);
-            userRepository.save(user);
-
-        }else {
-            orderHistoryRepository.save(orderHistory);
-        }
-
-        shoppingCartRepository.save(save);
-
-        save = new ShoppingCart();
-        session.setAttribute("cart", save);
-
-        return "/confirmOrder";
+        return cartService.savingOrder(session, request, adress);
     }
+
+
 
     @RequestMapping("/save")
     public String saveOrder(HttpSession session, HttpServletRequest request, @ModelAttribute Adress adress){
 
 
         adresRepository.save(adress);
-        ShoppingCart save = cartService.getCart(session);
-        OrderHistory orderHistory = new OrderHistory();
-        orderHistory.setProductList(save);
-        orderHistory.setOrderDate(LocalDateTime.now());
-        double sum = cartService.totalPrice(save);
-        orderHistory.setAdres(adress);
-        orderHistory.setPaid(sum);
-
-
-
-        for (CartItem x : save.getItems()){
-            ReservationItem reservationItem = reservationRepo.findByProductId(x.getProduct().getId());
-            reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
-            reservationRepo.save(reservationItem);
-        }
-        Principal principal = request.getUserPrincipal();
-
-        if(principal != null) {
-            User user = userRepository.findFirstByEmail(principal.getName());
-            List<OrderHistory> list = user.getOrder();
-            list.add(orderHistory);
-            user.setOrder(list);
-            orderHistoryRepository.save(orderHistory);
-            userRepository.save(user);
-
-        }else {
-            orderHistoryRepository.save(orderHistory);
-        }
-
-        shoppingCartRepository.save(save);
-
-        save = new ShoppingCart();
-        session.setAttribute("cart", save);
-
-        return "/confirmOrder";
+        return cartService.savingOrder(session, request, adress);
     }
 
 
