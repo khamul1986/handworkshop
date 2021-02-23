@@ -12,6 +12,7 @@ import pl.khamul.handworkshop.entity.ShoppingCart;
 import pl.khamul.handworkshop.entity.Product;
 import pl.khamul.handworkshop.repository.ProductRepository;
 import pl.khamul.handworkshop.repository.ReservationRepo;
+import pl.khamul.handworkshop.service.ProductService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,11 +27,14 @@ public class ProductController {
     private ShoppingCart cart;
     List<CartItem> list = new ArrayList<>();
     private final ReservationRepo reservationRepo;
+    private final ProductService productService;
 
-    public ProductController(ProductRepository productRepository, ShoppingCart cart, ReservationRepo reservationRepo) {
+    public ProductController(ProductRepository productRepository, ShoppingCart cart, ReservationRepo reservationRepo, ProductService productService) {
         this.productRepository = productRepository;
         this.cart = cart;
+
         this.reservationRepo = reservationRepo;
+        this.productService = productService;
     }
 
     @RequestMapping("")
@@ -45,9 +49,9 @@ public class ProductController {
 
     @PostMapping("/add")
     public String save(@ModelAttribute Product product){
-        productRepository.save(product);
-        ReservationItem reservationItem=new ReservationItem(product, 0L);
-        reservationRepo.save(reservationItem);
+
+        productService.saveProduct(product);
+
         return  "/confirm";
     }
 

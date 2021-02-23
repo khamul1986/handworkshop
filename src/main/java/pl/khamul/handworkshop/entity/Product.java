@@ -19,7 +19,7 @@ public class Product {
     private BigDecimal price;
 
 
-    @Range(min=0, message = "mniej niż zero to raczej ciężko")
+    @Range(min=0, message = "brak towaru w magazynie")
     private int storagequantity;
 
     private String description;
