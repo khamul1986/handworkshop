@@ -56,7 +56,7 @@ public class ProductController {
         model.addAttribute("list", productRepository.findAll());
         return "/list";
     }
-    @GetMapping ("/addtocart/{id}") //dodaje podwójne produkty do koszyka, przerobić na mapę(??)
+    @GetMapping ("/addtocart/{id}")
     public String addToCart(@PathVariable("id") Long toAdd, HttpServletRequest request){
         HttpSession session = request.getSession(false);
             if(session == null){
@@ -70,17 +70,20 @@ public class ProductController {
         CartItem cartItem = new CartItem(productRepository.findById(toAdd).get(), 1);
         Product product = cartItem.getProduct();
         product.setStoragequantity(product.getStoragequantity()-1);
+         if(product.getStoragequantity()>=0) {
+             list.add(cartItem);
+             cart.setItems(list);
 
-            list.add(cartItem);
-            cart.setItems(list);
+             ReservationItem reservationItem = reservationRepo.findByProductId(toAdd);
+             reservationItem.setProduct(product);
+             reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() + 1);
 
-        ReservationItem reservationItem = reservationRepo.findByProductId(toAdd);
-        reservationItem.setProduct(product);
-        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity()+1);
-
-        reservationRepo.save(reservationItem);
-        productRepository.save(product);
-        session.setAttribute("cart", cart);
+             reservationRepo.save(reservationItem);
+             productRepository.save(product);
+             session.setAttribute("cart", cart);
+         } else  {
+             return "/error";
+        }
 
 
 

@@ -1,16 +1,29 @@
 package pl.khamul.handworkshop.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pl.khamul.handworkshop.entity.CartItem;
+import pl.khamul.handworkshop.entity.Product;
+import pl.khamul.handworkshop.entity.ReservationItem;
 import pl.khamul.handworkshop.entity.ShoppingCart;
+import pl.khamul.handworkshop.repository.ProductRepository;
+import pl.khamul.handworkshop.repository.ReservationRepo;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
 public class CartService implements CartServiceInterface {
 
+    ReservationRepo reservationRepo;
+    ProductRepository productRepository;
 
+    public CartService(ReservationRepo reservationRepo, ProductRepository productRepository) {
+        this.reservationRepo = reservationRepo;
+        this.productRepository = productRepository;
+    }
 
     public double totalPrice(ShoppingCart cart){
         double sum=0;
@@ -26,5 +39,58 @@ public class CartService implements CartServiceInterface {
 
         return cart;
     }
+
+    @Override
+    public void reduceFromReservationOnDelete(Long id, CartItem cartItem) {
+        ReservationItem reservationItem = reservationRepo.findByProductId(id);
+        Product product = productRepository.getOne(id);
+        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - cartItem.getQuantity());
+        product.setStoragequantity(product.getStoragequantity() + cartItem.getQuantity());
+        productRepository.save(product);
+    }
+
+    @Override
+    public void reduceFromReservationOnPlusOne(Long id, CartItem cartItem) {
+        ReservationItem reservationItem = reservationRepo.findByProductId(id);
+        Product product = productRepository.getOne(id);
+        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() +1 );
+        product.setStoragequantity(product.getStoragequantity() -1);
+        productRepository.save(product);
+
+    }
+
+    @Override
+    public void updateReservationOnMinusOne(Long id, CartItem cartItem) {
+
+        ReservationItem reservationItem = reservationRepo.findByProductId(id);
+        Product product = productRepository.getOne(id);
+        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - 1 );
+        product.setStoragequantity(product.getStoragequantity() + 1 );
+        productRepository.save(product);
+
+    }
+
+    @Override
+    public CartItem getCartItem(Long id,ShoppingCart cart) {
+
+        List<CartItem> list = cart.getItems();
+
+        CartItem item = list.stream()
+                .filter(x -> id.equals(x.getProduct().getId()))
+                .findFirst().get();
+
+        return item;
+    }
+
+    @Override
+    public List<CartItem> prepareNewList(Long id, ShoppingCart cart) {
+        List<CartItem> list = cart.getItems();
+        List <CartItem> newCart =  list.stream()
+                .filter(x -> !id.equals(x.getProduct().getId()))
+                .collect(Collectors.toList());
+        return newCart;
+    }
+
+
 
 }

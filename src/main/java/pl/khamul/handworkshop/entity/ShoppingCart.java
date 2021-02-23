@@ -23,17 +23,12 @@ public class ShoppingCart {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<CartItem> items = new ArrayList<>();
 
- /*   @OneToOne
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private OrderHistory orderHistory;*/
 
     public ShoppingCart(ArrayList<CartItem> items) {
         this.items = items;
     }
 
     public ShoppingCart(){}
-
-
 
     public List<CartItem> getItems() {
         return items;
@@ -43,7 +38,6 @@ public class ShoppingCart {
         this.items = items;
     }
 
-
     public Long getId() {
         return id;
     }
@@ -51,14 +45,6 @@ public class ShoppingCart {
     public void setId(Long id) {
         this.id = id;
     }
-
-/*    public OrderHistory getOrderHistory() {
-        return orderHistory;
-    }
-
-    public void setOrderHistory(OrderHistory orderHistory) {
-        this.orderHistory = orderHistory;
-    }*/
 
     @Override
     public String toString() {

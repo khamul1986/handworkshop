@@ -59,42 +59,27 @@ public class CartController {
     public String deleteItem(@PathVariable Long id, HttpSession session){
 
         cart = cartService.getCart(session);
-        List<CartItem> list = cart.getItems();
 
+        CartItem cartItem = cartService.getCartItem(id, cart);
 
-        CartItem cartItem = list.stream()
-                .filter(x -> id.equals(x.getProduct().getId()))
-                .findFirst().get();
+        cart.setItems(cartService.prepareNewList(id, cart));
 
-        cart.setItems(list.stream()
-                .filter(x -> !id.equals(x.getProduct().getId()))
-                .collect(Collectors.toList()));
-
-
-        ReservationItem reservationItem = reservationRepo.findByProductId(id);
-        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - cartItem.getQuantity());
-        reservationRepo.save(reservationItem);
-
+        cartService.reduceFromReservationOnDelete(id, cartItem);
 
         session.setAttribute("cart", cart);
 
         return "/confirm";
 
     }
-    @RequestMapping("/update/{id}/{quantity}")
+    @RequestMapping("/update/{id}/{quantity}") //probowałem wygenerować link w js i thymeleaf, ale nie wsyzlo, restowo
     public String updateItem(@PathVariable Long id, @PathVariable int quantity, HttpSession session){
 
         cart = cartService.getCart(session);
-        List<CartItem> list = cart.getItems();
 
-        CartItem item = list.stream()
-                .filter(x -> id.equals(x.getProduct().getId()))
-                .findFirst().get();
+        CartItem item = cartService.getCartItem(id, cart);
         item.setQuantity(quantity);
 
-        List <CartItem> NewList =  list.stream()
-                .filter(x -> !id.equals(x.getProduct().getId()))
-                .collect(Collectors.toList());
+        List <CartItem> NewList = cartService.prepareNewList(id, cart);
 
         NewList.add(item);
 
@@ -230,30 +215,18 @@ public class CartController {
     public String plusOne(@PathVariable Long id, HttpSession session){
 
         cart = cartService.getCart(session);
-        List<CartItem> list = cart.getItems();
 
-        CartItem item = list.stream()
-                .filter(x -> id.equals(x.getProduct().getId()))
-                .findFirst().get();
-
-        Product product = item.getProduct();
-
-        product.setStoragequantity(product.getStoragequantity()-1);
+        CartItem item = cartService.getCartItem(id, cart);
 
         item.setQuantity(item.getQuantity()+1);
 
+        List <CartItem> newCart =  cartService.prepareNewList(id, cart);
 
-        List <CartItem> NewList =  list.stream()
-                .filter(x -> !id.equals(x.getProduct().getId()))
-                .collect(Collectors.toList());
+        newCart.add(item);
 
-        NewList.add(item);
+        cart.setItems(newCart);
 
-        cart.setItems(NewList);
-
-        ReservationItem reservationItem = reservationRepo.findByProductId(id);
-        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity()+1);
-        productRepository.save(product);
+        cartService.reduceFromReservationOnPlusOne(id, item);
 
         session.setAttribute("cart", cart);
 
@@ -266,30 +239,21 @@ public class CartController {
     public String minusOne(@PathVariable Long id, HttpSession session){
 
         cart = cartService.getCart(session);
-        List<CartItem> list = cart.getItems();
 
-        CartItem item = list.stream()
-                .filter(x -> id.equals(x.getProduct().getId()))
-                .findFirst().get();
+        CartItem item = cartService.getCartItem(id, cart);
         item.setQuantity(item.getQuantity()-1);
 
         if(item.getQuantity() == 0){
             deleteItem(item.getProduct().getId(), session);
         }else {
 
-            List<CartItem> NewList = list.stream()
-                    .filter(x -> !id.equals(x.getProduct().getId()))
-                    .collect(Collectors.toList());
+            List<CartItem> newCart = cartService.prepareNewList(id, cart);
 
-            NewList.add(item);
-            Product product = item.getProduct();
-            product.setStoragequantity(product.getStoragequantity()+1);
-            ReservationItem reservationItem = reservationRepo.findByProductId(id);
-            reservationItem.setReservedQuantity(reservationItem.getReservedQuantity()-1);
-            productRepository.save(product);
+            newCart.add(item);
 
-            cart.setItems(NewList);
+            cartService.updateReservationOnMinusOne(id, item);
 
+            cart.setItems(newCart);
 
             session.setAttribute("cart", cart);
 
