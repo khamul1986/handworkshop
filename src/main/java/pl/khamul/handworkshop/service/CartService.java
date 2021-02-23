@@ -2,14 +2,13 @@ package pl.khamul.handworkshop.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseBody;
-import pl.khamul.handworkshop.entity.CartItem;
-import pl.khamul.handworkshop.entity.Product;
-import pl.khamul.handworkshop.entity.ReservationItem;
-import pl.khamul.handworkshop.entity.ShoppingCart;
-import pl.khamul.handworkshop.repository.ProductRepository;
-import pl.khamul.handworkshop.repository.ReservationRepo;
+import pl.khamul.handworkshop.entity.*;
+import pl.khamul.handworkshop.repository.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,10 +18,18 @@ public class CartService implements CartServiceInterface {
 
     ReservationRepo reservationRepo;
     ProductRepository productRepository;
+    UserRepository userRepository;
+    OrderHistoryRepository orderHistoryRepository;
+    ShoppingCartRepository shoppingCartRepository;
 
-    public CartService(ReservationRepo reservationRepo, ProductRepository productRepository) {
+
+    public CartService(ReservationRepo reservationRepo, ProductRepository productRepository, UserRepository userRepository,
+                       OrderHistoryRepository orderHistoryRepository, ShoppingCartRepository shoppingCartRepository) {
         this.reservationRepo = reservationRepo;
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
+        this.orderHistoryRepository = orderHistoryRepository;
+        this.shoppingCartRepository = shoppingCartRepository;
     }
 
     public double totalPrice(ShoppingCart cart){
@@ -89,6 +96,44 @@ public class CartService implements CartServiceInterface {
                 .filter(x -> !id.equals(x.getProduct().getId()))
                 .collect(Collectors.toList());
         return newCart;
+    }
+
+    public String savingOrder(HttpSession session, HttpServletRequest request, Adress adress) {
+        ShoppingCart save = getCart(session);
+        OrderHistory orderHistory = new OrderHistory();
+        orderHistory.setProductList(save);
+        orderHistory.setOrderDate(LocalDateTime.now());
+        double sum =totalPrice(save);
+
+        orderHistory.setAdres(adress);
+        orderHistory.setPaid(sum);
+
+
+        for (CartItem x : save.getItems()){
+            ReservationItem reservationItem = reservationRepo.findByProductId(x.getProduct().getId());
+            reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
+            reservationRepo.save(reservationItem);
+        }
+        Principal principal = request.getUserPrincipal();
+
+        if(principal != null) {
+            User user = userRepository.findFirstByEmail(principal.getName());
+            List<OrderHistory> list = user.getOrder();
+            list.add(orderHistory);
+            user.setOrder(list);
+            orderHistoryRepository.save(orderHistory);
+            userRepository.save(user);
+
+        }else {
+            orderHistoryRepository.save(orderHistory);
+        }
+
+        shoppingCartRepository.save(save);
+
+        save = new ShoppingCart();
+        session.setAttribute("cart", save);
+
+        return "/confirmOrder";
     }
 
 
