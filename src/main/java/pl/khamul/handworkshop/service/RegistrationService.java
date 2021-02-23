@@ -4,21 +4,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.khamul.handworkshop.exception.UserAlreadyExistsException;
 import pl.khamul.handworkshop.entity.User;
+import pl.khamul.handworkshop.repository.RoleRepository;
 import pl.khamul.handworkshop.repository.UserRepository;
 import pl.khamul.handworkshop.transfer.UserDto;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
 
 @Service
-public class LoginService implements RegistrationServiceInterface {
+public class RegistrationService implements RegistrationServiceInterface {
 
 
     private UserRepository userRepository;
     private BCryptPasswordEncoder encoder;
+    private RoleRepository roleRepository;
 
-    public LoginService(UserRepository userRepository, BCryptPasswordEncoder encoder) {
+    public RegistrationService(UserRepository userRepository, BCryptPasswordEncoder encoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.encoder = encoder;
+        this.roleRepository = roleRepository;
     }
 
     @Transactional
@@ -28,7 +32,7 @@ public class LoginService implements RegistrationServiceInterface {
 
         if (emailExists(userDto.getEmail())) {
             throw new UserAlreadyExistsException(
-                    "There is an account with that email address:"
+                    "Ten adres jest juz w bazie"
                             + userDto.getEmail());
         }
         User user = new User();
@@ -36,7 +40,7 @@ public class LoginService implements RegistrationServiceInterface {
         String encodedPass = encoder.encode(userDto.getPassword());
         user.setPassword(encodedPass);
         user.setEmail(userDto.getEmail());
-       /* user.setRoles(Arrays.asList("ROLE_USER"));*/
+        user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
         return userRepository.save(user);
     }
 

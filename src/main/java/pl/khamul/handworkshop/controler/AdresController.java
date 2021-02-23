@@ -11,6 +11,7 @@ import pl.khamul.handworkshop.entity.Adress;
 import pl.khamul.handworkshop.entity.User;
 import pl.khamul.handworkshop.repository.AdresRepository;
 import pl.khamul.handworkshop.repository.UserRepository;
+import pl.khamul.handworkshop.service.AdresService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -22,31 +23,25 @@ public class AdresController {
 
     private final AdresRepository adresRepository;
     private final UserRepository userRepository;
+    private AdresService adresService;
 
 
-    public AdresController(AdresRepository adresRepository, UserRepository userRepository) {
+    public AdresController(AdresRepository adresRepository, UserRepository userRepository, AdresService adresService) {
         this.adresRepository = adresRepository;
         this.userRepository = userRepository;
+        this.adresService = adresService;
     }
 
-    @GetMapping("/adres")
+    @GetMapping("/adress")
     public String adres(){
 
         return "/addAdres";
     }
 
-    @PostMapping("/adres")
-    public String addAdres(Adress adress, HttpServletRequest request, Model model){
+    @PostMapping("/adress")
+    public String addAdres(Adress adress, HttpServletRequest request){
 
-        Principal principal = request.getUserPrincipal();
-        User user = userRepository.findFirstByEmail(principal.getName());
-
-        List list = user.getAdres();
-        list.add(adress);
-        user.setAdres(list);
-        adresRepository.save(adress);
-        userRepository.save(user);
-
+       adresService.addAdress(adress,request);
 
 
 
@@ -54,19 +49,13 @@ public class AdresController {
     }
 
     @RequestMapping("/viewadres")
-    @ResponseBody //widok nie JSON ;)
+    @ResponseBody
     public List adresList(Model model, HttpServletRequest request){
 
-        Principal principal = request.getUserPrincipal();
-        User user = userRepository.findFirstByEmail(principal.getName());
 
+ /*       model.addAttribute("adresList", adresList);*/
 
-
-        List adresList = adresRepository.findAllByUserId(user.getId());
-
-        model.addAttribute("adresList", adresList);
-
-        return adresList;
+        return adresService.adressList(request) ;
     }
 
 }

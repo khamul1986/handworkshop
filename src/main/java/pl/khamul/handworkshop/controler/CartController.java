@@ -12,30 +12,22 @@ import pl.khamul.handworkshop.service.CartService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Controller
 @RequestMapping("/basket")
 public class CartController {
 
-    private final ProductRepository productRepository;
-    private final ShoppingCartRepository shoppingCartRepository;
+
     private ShoppingCart cart;
-    private final OrderHistoryRepository orderHistoryRepository;
-    private final ReservationRepo reservationRepo;
     private final UserRepository userRepository;
     private final AdresRepository adresRepository;
     private final CartService cartService;
 
-
-    public CartController(ProductRepository productRepository, ShoppingCartRepository shoppingCartRepository, OrderHistoryRepository orderHistoryRepository, ReservationRepo reservationRepo, UserRepository userRepository, AdresRepository adresRepository, CartService cartService) {
-        this.productRepository = productRepository;
-        this.shoppingCartRepository = shoppingCartRepository;
-        this.orderHistoryRepository = orderHistoryRepository;
-        this.reservationRepo = reservationRepo;
+    public CartController(ShoppingCart cart, UserRepository userRepository, AdresRepository adresRepository, CartService cartService) {
+        this.cart = cart;
         this.userRepository = userRepository;
         this.adresRepository = adresRepository;
         this.cartService = cartService;

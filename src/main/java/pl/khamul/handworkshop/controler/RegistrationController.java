@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 import pl.khamul.handworkshop.exception.UserAlreadyExistsException;
-import pl.khamul.handworkshop.service.LoginService;
+import pl.khamul.handworkshop.service.RegistrationService;
 import pl.khamul.handworkshop.transfer.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,12 +22,12 @@ import javax.validation.Valid;
 public class RegistrationController {
 
 
-    private final LoginService loginService;
+    private final RegistrationService registrationService;
 
 
-    public RegistrationController(LoginService loginService) {
+    public RegistrationController(RegistrationService registrationService) {
 
-        this.loginService = loginService;
+        this.registrationService = registrationService;
     }
 
     @GetMapping("/register")
@@ -43,7 +43,7 @@ public class RegistrationController {
             HttpServletRequest request, Errors errors) {
 
         try {
-             loginService.registerNewUserAccount(userDto);
+             registrationService.registerNewUserAccount(userDto);
         } catch (UserAlreadyExistsException uaeEx) {
             ModelAndView mav = new ModelAndView();
             mav.addObject("message", "An account for that username/email already exists.");

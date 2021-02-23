@@ -28,7 +28,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String welcome(Model model, HttpServletRequest request){
         Principal principal = request.getUserPrincipal();
         User user = userRepository.findFirstByEmail(principal.getName());
@@ -57,5 +57,10 @@ public class UserController {
 
 
         return "/confirm";
+    }
+
+    @RequestMapping("/admin")
+    public String adminpanel(){
+        return "/adminpanel";
     }
 }
