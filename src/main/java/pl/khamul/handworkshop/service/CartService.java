@@ -1,7 +1,6 @@
 package pl.khamul.handworkshop.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
 import pl.khamul.handworkshop.entity.*;
 import pl.khamul.handworkshop.repository.*;
 
@@ -16,11 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class CartService implements CartServiceInterface {
 
-    ReservationRepo reservationRepo;
-    ProductRepository productRepository;
-    UserRepository userRepository;
-    OrderHistoryRepository orderHistoryRepository;
-    ShoppingCartRepository shoppingCartRepository;
+    private final ReservationRepo reservationRepo;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+    private final OrderHistoryRepository orderHistoryRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
 
 
     public CartService(ReservationRepo reservationRepo, ProductRepository productRepository, UserRepository userRepository,

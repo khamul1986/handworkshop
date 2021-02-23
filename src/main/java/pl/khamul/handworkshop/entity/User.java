@@ -4,6 +4,7 @@ package pl.khamul.handworkshop.entity;
 
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,8 @@ public class User {
 
     private String password;
 
-    private String role;
+    @ManyToMany
+    private Collection<Role> roles;
 
     @OneToMany
     private List<Adress> adres;
@@ -64,12 +66,12 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 
     public List<Adress> getAdres() {
