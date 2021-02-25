@@ -97,9 +97,12 @@ public class CartService implements CartServiceInterface {
         return newCart;
     }
 
+    @Override
     public String savingOrder(HttpSession session, HttpServletRequest request, Adress adress) {
         ShoppingCart save = getCart(session);
         OrderHistory orderHistory = new OrderHistory();
+        Principal principal = request.getUserPrincipal();
+
         orderHistory.setProductList(save);
         orderHistory.setOrderDate(LocalDateTime.now());
         double sum =totalPrice(save);
@@ -113,7 +116,7 @@ public class CartService implements CartServiceInterface {
             reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
             reservationRepo.save(reservationItem);
         }
-        Principal principal = request.getUserPrincipal();
+
 
         if(principal != null) {
             User user = userRepository.findFirstByEmail(principal.getName());

@@ -21,14 +21,12 @@ import java.util.List;
 @RequestMapping("/user")
 public class AdresController {
 
-    private final AdresRepository adresRepository;
-    private final UserRepository userRepository;
+
     private AdresService adresService;
 
 
-    public AdresController(AdresRepository adresRepository, UserRepository userRepository, AdresService adresService) {
-        this.adresRepository = adresRepository;
-        this.userRepository = userRepository;
+    public AdresController( AdresService adresService) {
+
         this.adresService = adresService;
     }
 

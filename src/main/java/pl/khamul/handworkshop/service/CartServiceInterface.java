@@ -1,8 +1,10 @@
 package pl.khamul.handworkshop.service;
 
+import pl.khamul.handworkshop.entity.Adress;
 import pl.khamul.handworkshop.entity.CartItem;
 import pl.khamul.handworkshop.entity.ShoppingCart;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -21,6 +23,8 @@ public interface CartServiceInterface {
     CartItem getCartItem(Long id, ShoppingCart cart);
 
     List<CartItem> prepareNewList(Long id, ShoppingCart cart);
+
+   String savingOrder(HttpSession session, HttpServletRequest request, Adress adress);
 
 
 

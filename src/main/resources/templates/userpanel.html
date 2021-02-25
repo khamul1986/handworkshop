@@ -6,10 +6,11 @@
     <title>Title</title>
 </head>
 <body>
+<div th:insert="fragments/header"></div>
 <h1>Panel użytkownika</h1>
 <a th:href="@{/user/adress}">Dodaj Adres</a>
 <a th:href="@{/user/viewadres}">Lista Adresów</a>
 <a th:href="@{/user/detail}">Dane Użytkownika</a>
-
+<a th:href="@{/user/history}">Historia zamówień</a>
 </body>
 </html>

@@ -5,14 +5,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import pl.khamul.handworkshop.entity.User;
 import pl.khamul.handworkshop.entity.UserNames;
 import pl.khamul.handworkshop.repository.UserDetailsRepo;
 import pl.khamul.handworkshop.repository.UserRepository;
+import pl.khamul.handworkshop.service.OrderHistoryService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.List;
 
 
 @Controller
@@ -21,12 +24,13 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final UserDetailsRepo userDetailsRepo;
+    private final OrderHistoryService orderHistoryService;
 
-    public UserController(UserRepository userRepository, UserDetailsRepo userDetailsRepo) {
+    public UserController(UserRepository userRepository, UserDetailsRepo userDetailsRepo, OrderHistoryService orderHistoryService) {
         this.userRepository = userRepository;
         this.userDetailsRepo = userDetailsRepo;
+        this.orderHistoryService = orderHistoryService;
     }
-
 
     @GetMapping("")
     public String welcome(Model model, HttpServletRequest request){
@@ -45,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/detail")
-    public String addAdres(UserNames details, HttpSession session){
+    public String addNames(UserNames details, HttpSession session){
 
         User user = (User)session.getAttribute("user");
         user.setDetails(details);
@@ -60,7 +64,16 @@ public class UserController {
     }
 
     @RequestMapping("/admin")
-    public String adminpanel(){
+    public String adminPanel(){
         return "/adminpanel";
+    }
+
+    @RequestMapping("/history")
+    @ResponseBody
+    public List showHistory(HttpServletRequest request){
+
+
+
+        return orderHistoryService.showHistory(request);
     }
 }

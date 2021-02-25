@@ -11,5 +11,5 @@ public interface OrderHistoryRepository extends JpaRepository<OrderHistory,Long>
 
 
     @Query("SELECT a FROM User u join u.order a Where u.id = :id")
-    List<OrderHistory> findHistoryByUserId();
+    List<OrderHistory> findHistoryByUserId(Long id);
 }
