@@ -88,7 +88,7 @@ public class CartController {
     @RequestMapping("/order")
     public String createOrder(HttpSession session, Model model, HttpServletRequest request){
         ShoppingCart temp = cartService.getCart(session);
-        Principal principal = request.getUserPrincipal();
+        Principal principal = request.getUserPrincipal();//przepakowac razem z wyciaganiem listy adrrsów
 
         if (temp == null) {
             model.addAttribute("cart", new ArrayList<CartItem>());
@@ -100,11 +100,11 @@ public class CartController {
 
         if(principal !=null) {
             User user = userRepository.findFirstByEmail(principal.getName());
-            List<Adress> list = user.getAdres();
-            model.addAttribute("adres", list);
+            List<Adress> list = user.getAdres(); //przepakowac w service, w sumie metoda chyba nawet jest w AdresRepo
+            model.addAttribute("adress", list);
         }else{
             List<Adress> list= new ArrayList<>();
-            model.addAttribute("adres", list);
+            model.addAttribute("adress", list);
         }
 
 

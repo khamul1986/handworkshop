@@ -7,6 +7,8 @@
 </head>
 <body>
 
+<div th:insert="fragments/header"></div>
+
 <form th:action="@{/user/adress}" th:object="${adress}" method="post">
     Miasto <input type="text" name="city"></br>
     Ulica <input type="text" name="street"></br>

@@ -7,6 +7,8 @@
 </head>
 <body>
 
+<div th:insert="fragments/header"></div>
+
 <form th:action="@{/detail}" th:object="${detail}" method="post">
     Imię <input type="text" name="firstName"></br>
     Nazwisko <input type="text" name="lastName"></br>
