@@ -27,4 +27,8 @@ public class OrderHistoryService {
         List orderHistory  = orderHistoryRepository.findHistoryByUserId(user.getId());
     return orderHistory;
     }
+
+    public List showAll(){
+        return orderHistoryRepository.findAll();
+    }
 }

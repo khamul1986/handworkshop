@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan("pl.khamul")
 @EnableJpaRepositories("pl.khamul.handworkshop.repository")
 @EnableTransactionManagement
-@ServletComponentScan
 @EnableScheduling
 public class AppConfig {
 
