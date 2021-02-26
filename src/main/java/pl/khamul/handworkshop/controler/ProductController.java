@@ -42,12 +42,12 @@ public class ProductController {
         return "/index";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/admin/add")
     public String add(){
         return "/add";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/admin/add")
     public String save(@ModelAttribute Product product){
 
         productService.saveProduct(product);
@@ -68,5 +68,7 @@ public class ProductController {
         return productService.addToCart(request, toAdd);
     }
 
-
 }
+
+
+

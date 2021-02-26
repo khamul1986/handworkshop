@@ -22,7 +22,7 @@ public class User {
 
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles;
 
     @OneToMany
@@ -33,6 +33,8 @@ public class User {
 
    @OneToOne
    private UserNames details;
+
+
 
     public Long getId() {
         return id;
@@ -104,9 +106,10 @@ public class User {
                 "id=" + id +
                 ", userName='" + userName + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
+                ", roles=" + roles +
                 ", adres=" + adres +
                 ", order=" + order +
+                ", details=" + details +
                 '}';
     }
 }

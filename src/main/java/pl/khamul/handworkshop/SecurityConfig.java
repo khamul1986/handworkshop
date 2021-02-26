@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import org.springframework.security.authentication.AuthenticationManager;
+
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -27,6 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService userDetailsService() {
         return new LoginDetailsService();
+
     }
 
     @Bean
@@ -56,17 +57,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.authorizeRequests()
-                .antMatchers("/user/admin/*").authenticated()
-                .antMatchers("/user/*").authenticated()
-                .anyRequest().permitAll()
-                .and()
+                    .antMatchers("/user/admin/**").hasAuthority("WRITE_PRIVILEGE")
+                    .antMatchers("/user/**").authenticated()
+                    .anyRequest().permitAll()
+                    .and()
                 .formLogin()
-                .usernameParameter("email")
-                .defaultSuccessUrl("/user/")
+                    .usernameParameter("email")
+                    .defaultSuccessUrl("/user/")
                 .permitAll()
-                .and()
-                .logout().logoutSuccessUrl("/").permitAll();
+                    .and()
+                    .logout().logoutSuccessUrl("/").permitAll()
+                    .and()
+                    .exceptionHandling().accessDeniedPage("/user/403");
 
 
     }
+
 }

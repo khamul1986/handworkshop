@@ -3,9 +3,8 @@ package pl.khamul.handworkshop.entity;
 import javax.persistence.*;
 import java.util.Collection;
 
-
 @Entity
-public class Role {
+public class Privilege {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,21 +12,18 @@ public class Role {
 
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
-    private Collection<User> users;
+    @ManyToMany(mappedBy = "privileges")
+    private Collection<Role> roles;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Privilege> privileges;
 
-    public Role() {
+    public Privilege() {
         super();
     }
 
-    public Role(final String name) {
+    public Privilege(final String name) {
         super();
         this.name = name;
     }
-
 
     public Long getId() {
         return id;
@@ -45,27 +41,18 @@ public class Role {
         this.name = name;
     }
 
-    public Collection<User> getUsers() {
-        return users;
+    public Collection<Role> getRoles() {
+        return roles;
     }
 
-    public void setUsers(Collection<User> users) {
-        this.users = users;
-    }
-
-    public Collection<Privilege> getPrivileges() {
-        return privileges;
-    }
-
-    public void setPrivileges(Collection<Privilege> privileges) {
-        this.privileges = privileges;
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 
     @Override
     public String toString() {
-        return "Role{" +
+        return "Privilege{" +
                 "name='" + name + '\'' +
-                ", privileges=" + privileges +
                 '}';
     }
 }

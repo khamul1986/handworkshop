@@ -13,19 +13,21 @@ import java.util.List;
 @Service
 public class AdresService implements AdresServiceInterface {
 
-    private UserRepository userRepository;
-    private AdresRepository adresRepository;
+    private final UserRepository userRepository;
+    private final AdresRepository adresRepository;
+    private final UserService userService;
 
-    public AdresService(UserRepository userRepository, AdresRepository adresRepository) {
+    public AdresService(UserRepository userRepository, AdresRepository adresRepository, UserService userService) {
         this.userRepository = userRepository;
         this.adresRepository = adresRepository;
+        this.userService = userService;
     }
 
     @Override
     public List adressList(HttpServletRequest request) {
 
-        Principal principal = request.getUserPrincipal();
-        User user = userRepository.findFirstByEmail(principal.getName());
+
+        User user = userService.getUser(request);
 
         List adresList = adresRepository.findAllByUserId(user.getId());
 
@@ -35,8 +37,8 @@ public class AdresService implements AdresServiceInterface {
     @Override
     public void addAdress(Adress adress, HttpServletRequest request) {
 
-        Principal principal = request.getUserPrincipal();
-        User user = userRepository.findFirstByEmail(principal.getName());
+
+        User user = userService.getUser(request);
 
         List list = user.getAdres();
         list.add(adress);
