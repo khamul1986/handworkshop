@@ -17,9 +17,9 @@ public class ReservationItem {
     private Product product;
 
 
-    private Long reservedQuantity;
+    private int reservedQuantity;
 
-    public ReservationItem(Product product, Long reservedQuantity) {
+    public ReservationItem(Product product, int reservedQuantity) {
         this.product = product;
         this.reservedQuantity = reservedQuantity;
     }
@@ -43,11 +43,11 @@ public class ReservationItem {
         this.product = product;
     }
 
-    public Long getReservedQuantity() {
+    public int getReservedQuantity() {
         return reservedQuantity;
     }
 
-    public void setReservedQuantity(Long reservedQuantity) {
+    public void setReservedQuantity(int reservedQuantity) {
         this.reservedQuantity = reservedQuantity;
     }
 }

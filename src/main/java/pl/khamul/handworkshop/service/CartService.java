@@ -1,5 +1,6 @@
 package pl.khamul.handworkshop.service;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.khamul.handworkshop.entity.*;
 import pl.khamul.handworkshop.repository.*;
@@ -20,15 +21,20 @@ public class CartService implements CartServiceInterface {
     private final UserRepository userRepository;
     private final OrderHistoryRepository orderHistoryRepository;
     private final ShoppingCartRepository shoppingCartRepository;
+    private final UnregisteredOrderRepository unregisteredOrderRepository;
+    private final AdresService adresService;
 
 
-    public CartService(ReservationRepo reservationRepo, ProductRepository productRepository, UserRepository userRepository,
-                       OrderHistoryRepository orderHistoryRepository, ShoppingCartRepository shoppingCartRepository) {
+    public CartService(ReservationRepo reservationRepo, ProductRepository productRepository,
+                       UserRepository userRepository, OrderHistoryRepository orderHistoryRepository, ShoppingCartRepository shoppingCartRepository,
+                       UnregisteredOrderRepository unregisteredOrderRepository, AdresService adresService) {
         this.reservationRepo = reservationRepo;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
         this.orderHistoryRepository = orderHistoryRepository;
         this.shoppingCartRepository = shoppingCartRepository;
+        this.unregisteredOrderRepository = unregisteredOrderRepository;
+        this.adresService = adresService;
     }
 
     public double totalPrice(ShoppingCart cart){
@@ -59,7 +65,7 @@ public class CartService implements CartServiceInterface {
     public void reduceFromReservationOnPlusOne(Long id, CartItem cartItem) {
         ReservationItem reservationItem = reservationRepo.findByProductId(id);
         Product product = productRepository.getOne(id);
-        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() +1 );
+        reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() + 1 );
         product.setStoragequantity(product.getStoragequantity() -1);
         productRepository.save(product);
 
@@ -136,6 +142,57 @@ public class CartService implements CartServiceInterface {
         session.setAttribute("cart", save);
 
         return "/confirmOrder";
+    }
+
+    public String savingAnonymusOrder(HttpSession session, UnregisteredOrder unregisteredOrder){
+        Adress adress = adresService.createUnregisteredAdress(unregisteredOrder);
+        ShoppingCart save = getCart(session);
+        OrderHistory orderHistory = new OrderHistory();
+
+        orderHistory.setProductList(save);
+        orderHistory.setOrderDate(LocalDateTime.now());
+        double sum =totalPrice(save);
+
+        orderHistory.setAdres(adress);
+        orderHistory.setPaid(sum);
+
+
+        for (CartItem x : save.getItems()){
+            ReservationItem reservationItem = reservationRepo.findByProductId(x.getProduct().getId());
+            reservationItem.setReservedQuantity(reservationItem.getReservedQuantity() - x.getQuantity());
+            reservationRepo.save(reservationItem);
+        }
+
+        orderHistoryRepository.save(orderHistory);
+        unregisteredOrder.setOrderHistory(orderHistory);
+
+        unregisteredOrderRepository.save(unregisteredOrder);
+
+
+
+        shoppingCartRepository.save(save);
+
+    save = new ShoppingCart();
+        session.setAttribute("cart", save);
+
+
+
+        return "/confirmOrder";
+    }
+
+    @Scheduled(cron = "0 0 * * * ?" , zone = "Europe/Paris")
+    public void clearReservation() {
+        List<ReservationItem> list = reservationRepo.findAll();
+
+        for(ReservationItem item : list){
+            Long id = item.getProduct().getId();
+            Product product = productRepository.getOne(id);
+            product.setStoragequantity(product.getStoragequantity() + item.getReservedQuantity());
+            item.setReservedQuantity(0);
+
+            productRepository.save(product);
+
+        }
     }
 
 }

@@ -31,7 +31,7 @@ Suma <span th:text="${total}"></span>
         <td><span th:text = "${add.city}"></span></td>
         <td><span th:text = "${add.street}"></span></td>
         <td><span th:text = "${add.number}"></span></td>
-        <td><a th:href = "@{/basket/save/{id}(id=${add.id})}">Wyślij na ten adress</a></td>
+        <td><a th:href = "@{/basket/save/{id}(id=${add.id})}">Wyślij na ten adres</a></td>
     </tr>
 </table>
 
@@ -46,9 +46,6 @@ Sam formularz wpisywania adresu i zapisanie za każdym razem od nowa do bazy nie
     Ulica <input type="text" name="street"></br>
     Numer<input type="text" name="number"></br>
     Dodaj<input type="submit"  value="Dodaj">
-
-
-
 </form>
 
 <a th:href="@{/list}">lista</a></br>

@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.khamul.handworkshop.entity.*;
 import pl.khamul.handworkshop.repository.*;
+import pl.khamul.handworkshop.service.AdresService;
 import pl.khamul.handworkshop.service.CartService;
 
 
@@ -25,12 +26,15 @@ public class CartController {
     private final UserRepository userRepository;
     private final AdresRepository adresRepository;
     private final CartService cartService;
+    private final AdresService adresService;
 
-    public CartController(ShoppingCart cart, UserRepository userRepository, AdresRepository adresRepository, CartService cartService) {
+    public CartController(ShoppingCart cart, UserRepository userRepository,
+                          AdresRepository adresRepository, CartService cartService, AdresService adresService) {
         this.cart = cart;
         this.userRepository = userRepository;
         this.adresRepository = adresRepository;
         this.cartService = cartService;
+        this.adresService = adresService;
     }
 
     @GetMapping("")
@@ -104,12 +108,8 @@ public class CartController {
             model.addAttribute("adress", list);
         }else{
             List<Adress> list= new ArrayList<>();
-            model.addAttribute("adress", list);
+            return "/orderUnreg";
         }
-
-
-
-
 
 
         return "/order";
@@ -134,7 +134,13 @@ public class CartController {
         adresRepository.save(adress);
         return cartService.savingOrder(session, request, adress);
     }
+    @RequestMapping("/save/anonymus")
+    public String saveAnonymusOrder(HttpSession session, @ModelAttribute UnregisteredOrder unregisteredOrder){
 
+
+
+        return cartService.savingAnonymusOrder(session, unregisteredOrder);
+    }
 
 
     @RequestMapping("/plus/{id}")
