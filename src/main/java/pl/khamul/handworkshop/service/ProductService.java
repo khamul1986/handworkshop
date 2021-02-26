@@ -30,7 +30,7 @@ public class ProductService implements ProductServiceInterface  {
 
     public void saveProduct(Product product){
         productRepository.save(product);
-        ReservationItem reservationItem=new ReservationItem(product, 0L);
+        ReservationItem reservationItem=new ReservationItem(product, 0);
         reservationRepo.save(reservationItem);
     }
 

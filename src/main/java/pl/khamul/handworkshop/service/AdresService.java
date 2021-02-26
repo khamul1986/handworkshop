@@ -2,6 +2,7 @@ package pl.khamul.handworkshop.service;
 
 import org.springframework.stereotype.Service;
 import pl.khamul.handworkshop.entity.Adress;
+import pl.khamul.handworkshop.entity.UnregisteredOrder;
 import pl.khamul.handworkshop.entity.User;
 import pl.khamul.handworkshop.repository.AdresRepository;
 import pl.khamul.handworkshop.repository.UserRepository;
@@ -47,5 +48,15 @@ public class AdresService implements AdresServiceInterface {
         userRepository.save(user);
 
 
+    }
+
+    public Adress createUnregisteredAdress(UnregisteredOrder unregisteredOrder){
+        Adress adress = new Adress();
+        adress.setCity(unregisteredOrder.getCity());
+        adress.setStreet(unregisteredOrder.getStreet());
+        adress.setNumber(unregisteredOrder.getNumber());
+
+        adresRepository.save(adress);
+        return adress;
     }
 }

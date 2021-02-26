@@ -2,10 +2,7 @@ package pl.khamul.handworkshop.controler;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import pl.khamul.handworkshop.entity.User;
 import pl.khamul.handworkshop.entity.UserNames;
 import pl.khamul.handworkshop.repository.UserDetailsRepo;
@@ -47,11 +44,11 @@ public class UserController {
     @GetMapping("/detail") // dołożyć filtrowanie
     public String adres(){
 
-        return "userdetails";
+        return "/adddetails";
     }
 
     @PostMapping("/detail")
-    public String addNames(UserNames details, HttpServletRequest request){
+    public String addNames(@ModelAttribute UserNames details, HttpServletRequest request){
 
      userService.setDetails(request, details);
 

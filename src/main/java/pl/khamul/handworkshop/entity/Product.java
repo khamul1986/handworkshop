@@ -24,7 +24,6 @@ public class Product {
 
     private String description;
 
-    private String size;
 
     //zdjęcia produktu w formie kolekcji linków(set?) --> id i nazwa w bazie
 
@@ -68,13 +67,6 @@ public class Product {
         this.description = description;
     }
 
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
 
     @Override
     public String toString() {
@@ -84,7 +76,6 @@ public class Product {
                 ", price=" + price +
                 ", storagequantity=" + storagequantity +
                 ", description='" + description + '\'' +
-                ", size='" + size + '\'' +
                 '}';
     }
 }

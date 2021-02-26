@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.authorizeRequests()
-                    .antMatchers("/user/admin/**").hasAuthority("WRITE_PRIVILEGE")
+                    .antMatchers("/admin/**").hasAuthority("WRITE_PRIVILEGE")
                     .antMatchers("/user/**").authenticated()
                     .anyRequest().permitAll()
                     .and()

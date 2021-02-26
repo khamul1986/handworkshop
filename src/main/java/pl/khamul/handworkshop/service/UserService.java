@@ -37,7 +37,7 @@ public class UserService implements UserServiceInterface {
         userRepository.save(user);
     }
     public List<User> userList(){
-        System.out.println(userRepository.findAll());
-        return userRepository.findAll();
+
+        return userRepository.userList();
     }
 }
