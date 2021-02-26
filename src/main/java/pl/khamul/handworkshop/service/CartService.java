@@ -145,16 +145,15 @@ public class CartService implements CartServiceInterface {
     }
 
     public String savingAnonymusOrder(HttpSession session, UnregisteredOrder unregisteredOrder){
-        Adress adress = adresService.createUnregisteredAdress(unregisteredOrder);
+
         ShoppingCart save = getCart(session);
-        OrderHistory orderHistory = new OrderHistory();
 
-        orderHistory.setProductList(save);
-        orderHistory.setOrderDate(LocalDateTime.now());
+
         double sum =totalPrice(save);
+        unregisteredOrder.setShoppingCart(save);
+        unregisteredOrder.setTotal(sum);
 
-        orderHistory.setAdres(adress);
-        orderHistory.setPaid(sum);
+
 
 
         for (CartItem x : save.getItems()){
@@ -163,14 +162,13 @@ public class CartService implements CartServiceInterface {
             reservationRepo.save(reservationItem);
         }
 
-        orderHistoryRepository.save(orderHistory);
-        unregisteredOrder.setOrderHistory(orderHistory);
+        shoppingCartRepository.save(save);
 
         unregisteredOrderRepository.save(unregisteredOrder);
 
 
 
-        shoppingCartRepository.save(save);
+
 
     save = new ShoppingCart();
         session.setAttribute("cart", save);
@@ -180,19 +178,7 @@ public class CartService implements CartServiceInterface {
         return "/confirmOrder";
     }
 
-    @Scheduled(cron = "0 0 * * * ?" , zone = "Europe/Paris")
-    public void clearReservation() {
-        List<ReservationItem> list = reservationRepo.findAll();
-
-        for(ReservationItem item : list){
-            Long id = item.getProduct().getId();
-            Product product = productRepository.getOne(id);
-            product.setStoragequantity(product.getStoragequantity() + item.getReservedQuantity());
-            item.setReservedQuantity(0);
-
-            productRepository.save(product);
-
-        }
-    }
 
 }
+
+

@@ -13,7 +13,7 @@ public class ReservationItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long Id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Product product;
 
 

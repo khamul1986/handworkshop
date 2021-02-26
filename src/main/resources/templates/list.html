@@ -12,6 +12,7 @@
     <thead>
     <th>name</th>
     <th>price</th>
+    <th>opis</th>
     <th>add to cart</th>
     </thead>
     <tbody>
@@ -21,6 +22,7 @@
     <tr th:each= "prod : ${list}">
         <td><span th:text="${prod.name}"> name</span></td>
         <td><span th:text="${prod.price}">price</span></td>
+        <td><span th:text="${prod.description}">description</span></td>
         <td><a th:href = '@{/addtocart/{id}(id=${prod.id})}'>add to cart</a></td>
     </tr>
     </tbody>

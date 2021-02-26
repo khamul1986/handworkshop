@@ -13,8 +13,10 @@ public class UnregisteredOrder {
     private String city;
     private String street;
     private String number;
+    private double total;
     @OneToOne
-    private OrderHistory orderHistory;
+    private ShoppingCart shoppingCart;
+
 
     public Long getId() {
         return Id;
@@ -64,11 +66,19 @@ public class UnregisteredOrder {
         this.number = number;
     }
 
-    public OrderHistory getOrderHistory() {
-        return orderHistory;
+    public ShoppingCart getShoppingCart() {
+        return shoppingCart;
     }
 
-    public void setOrderHistory(OrderHistory orderHistory) {
-        this.orderHistory = orderHistory;
+    public void setShoppingCart(ShoppingCart shoppingCart) {
+        this.shoppingCart = shoppingCart;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 }

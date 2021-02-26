@@ -27,7 +27,7 @@ Koszyk</br>
             <td><span th:text="${prod.quantity}">quantity</span></td>
             <td><a th:href = '@{/basket/delete/{id}(id=${prod.product.id})}'>Delete item</a></td>
             <td><a th:href="@{basket/plus/{id}(id=${prod.product.id})}">+1</a></td>
-            <td><input type="number"> </td>
+            <td><input type="number"></td>
             <td><a th:href="@{/basket/update/{id}/{quantity}(id=${prod.product.id},quantity=${quantity})}">Nowa ilość </a></td>
         </tr>
     </tbody>
@@ -35,7 +35,7 @@ Koszyk</br>
 Suma <span th:text="${total}"></span>
 </br>
 <a th:href="@{/list}">lista</a></br>
-<a th:href="@{/basket/order}">Wyślij</a><!--Tu będzie odsyłacz do formularza adresu-->
+<a th:href="@{/basket/order}">Wyślij</a>
 
 </body>
 </html>

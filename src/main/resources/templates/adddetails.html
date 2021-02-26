@@ -9,7 +9,7 @@
 
 <div th:insert="fragments/header"></div>
 
-<form th:action="@{/detail}" th:object="${detail}" method="post">
+<form th:action="@{/user/detail}" th:object="${details}" method="post">
     Imię <input type="text" name="firstName"></br>
     Nazwisko <input type="text" name="lastName"></br>
     Dodaj<input type="submit"  value="Dodaj">
